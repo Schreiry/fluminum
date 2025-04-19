@@ -1,4 +1,4 @@
-An efficient algorithm for matrix operations with Strassen algorithm (EAMO)
+An efficient algorithm for matrix operations with Strassen algorithm (Fluminum)
 ====================================
 
 Project Overview
@@ -35,14 +35,18 @@ Requirements
 Installation
 ------------
 
-1.  git clone https://github.com/your-repo/thread-matrix-strassen.git
-    
+1.   ### git clone : 
+```
+    https://github.com/Schreiry/fluminum.git
+```
 2.  cd thread-matrix-strassen
-    
+
+```
 3.  g++ -std=c++11 -o matrix\_multiply Flens.cpp system\_info.cpp matrix\_operations.cpp -lpthread
     
     *   On Windows, you may need to adjust the command depending on your compiler (e.g., MinGW or MSVC).
-        
+
+```
 
 Usage
 -----
