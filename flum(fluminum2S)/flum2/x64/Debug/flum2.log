@@ -1,0 +1,5 @@
+﻿  flum2.cpp
+C:\Users\woter\source\repos\flum2\flum2.cpp(72,19): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  flum2.vcxproj -> C:\Users\woter\source\repos\flum2\x64\Debug\flum2.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
