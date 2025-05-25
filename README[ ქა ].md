@@ -117,6 +117,32 @@ Fluminum-ის ნამდვილი ძალა ვლინდება �
 | **AMD Ryzen 5 7530U** | 1 | 252.505 | 12.9991 | **\~19.4x** | 1.0x |
 | | **12** | 252.505 | **2.5024** | **\~100.9x** | **\~5.2x** |
 
+![Screenshot 2025-05-24 132145](https://github.com/user-attachments/assets/38ca9c7d-46c9-4add-85b4-15a40c06aa71)
+
+![Screenshot 2025-05-24 140951](https://github.com/user-attachments/assets/ae5235b0-7867-4a94-9e7a-016b17d8782e)
+
+
+
+![Screenshot 2025-05-24 141351](https://github.com/user-attachments/assets/8e362c8c-deeb-4d4f-a249-1d776143eab8)
+
+![Screenshot 2025-05-24 141440](https://github.com/user-attachments/assets/970edeee-8bfa-492e-8eab-5f7df5e1f533)
+
+
+
+![Screenshot 2025-05-24 141704](https://github.com/user-attachments/assets/57708564-98f4-42ae-8308-32f830c8ab59)
+
+![Screenshot 2025-05-24 142042](https://github.com/user-attachments/assets/617de32c-5aed-494c-b337-7d5dd7887723)
+
+
+
+![Screenshot 2025-05-24 142300](https://github.com/user-attachments/assets/31e000d1-d0f9-497f-8748-dd5227091e28)
+
+![Screenshot 2025-05-24 142556](https://github.com/user-attachments/assets/7350092b-ccc2-45bb-9ef9-09875d36036f)
+
+![Screenshot 2025-05-24 142629](https://github.com/user-attachments/assets/966db94e-dcc0-4a7a-acc5-29180918cec2)
+
+
+
 **დაკვირვებები:**
 
   * **ალგორითმული უპირატესობა:** მხოლოდ შტრასენი უზრუნველყოფს 18x-დან 46x-მდე აჩქარებას.
