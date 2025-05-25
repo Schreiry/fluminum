@@ -27,7 +27,7 @@ The implementation transcends simple algorithmic optimization by incorporating s
 ## Installation and Setup
 
 ### Prerequisites
-- **C++ Compiler**: C++11 or later (GCC, Clang, or MSVC)
+- **C++ Compiler**: C++14 or later (GCC, Clang, or MSVC)
 - **Operating System**: Windows 10/11 or Linux (Ubuntu 18.04+, CentOS 7+)
 - **Hardware**: Multi-core CPU recommended (tested extensively on Intel and AMD architectures)
 
