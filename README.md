@@ -27,6 +27,10 @@ Language variability for documentation :
   * **🏎️ SIMD Acceleration:** The base-case (naive) multiplication is supercharged with **AVX and SSE2 intrinsics**, processing multiple `double` values per clock cycle where hardware allows.
   * **🖥️ System-Aware:** Automatically **detects CPU cores, available memory, and SIMD support** (AVX/SSE2), providing memory estimates and warnings.
   * **📊 Interactive & Informative:** Features a **rich console UI** with colors, boxes, an animated progress bar, sound notifications, and detailed performance breakdowns (including QPC and Chrono timers) and **CSV logging**.
+![Screenshot 2025-05-23 203237](https://github.com/user-attachments/assets/f2193ee0-f37d-4904-b2a1-d4bbb493eb83)
+![Screenshot 2025-05-23 212430](https://github.com/user-attachments/assets/51d48adf-5aee-494a-bb34-3e5e64c17c84)
+
+
   * **🛠️ Robust & Flexible:** Handles **non-power-of-two matrices** through automatic padding/unpadding, provides various input methods (random, console, file), and allows saving results.
   * **🔍 Parallel Comparison:** Offers a recursive, parallel matrix comparison function with **epsilon support** for floating-point accuracy checks.
   * **📝 Modern C++:** Built with C++17, emphasizing clean code, RAII, and modern concurrency features.
