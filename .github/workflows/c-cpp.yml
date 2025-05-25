@@ -1,0 +1,94 @@
+# Устанавливаем минимально необходимую версию CMake.
+# Версия 3.15+ рекомендуется для современных возможностей CMake.
+cmake_minimum_required(VERSION 3.15)
+
+# Определяем имя проекта и языки, которые он использует (в данном случае CXX - C++).
+project(FluminumMatrixOperations LANGUAGES CXX)
+
+# --- Настройка стандарта C++ ---
+# Устанавливаем C++17, так как ваш код использует его возможности
+# (например, std::async, std::atomic, std::filesystem).
+set(CMAKE_CXX_STANDARD 17)
+# Требуем, чтобы стандарт C++17 был обязательным.
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Отключаем расширения компилятора (например, GNU), чтобы обеспечить лучшую переносимость.
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# --- Флаги компилятора ---
+# Добавляем флаги в зависимости от используемого компилятора.
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    # Настройки для компилятора Microsoft Visual C++ (MSVC).
+    # Определяем NOMINMAX, чтобы избежать конфликтов макросов с <windows.h>.
+    add_compile_definitions(NOMINMAX)
+    # Устанавливаем высокий уровень предупреждений (/W4) и считаем предупреждения ошибками (/WX).
+    add_compile_options(/W4 /WX)
+    # Включаем обработку исключений C++ (/EHsc).
+    add_compile_options(/EHsc)
+    # MSVC часто включает поддержку SIMD (AVX/SSE2) на основе целевой архитектуры.
+    # Ваш код уже содержит внутренние проверки, поэтому принудительное включение здесь может не понадобиться.
+
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Настройки для компиляторов GCC и Clang.
+    # Устанавливаем высокий уровень предупреждений и считаем их ошибками.
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+    # Связываем с библиотекой pthreads для использования std::thread.
+    add_compile_options(-pthread)
+    # Пытаемся включить флаги для AVX и SSE2.
+    include(CheckCXXCompilerFlag)
+    check_cxx_compiler_flag("-mavx" COMPILER_HAS_AVX)
+    check_cxx_compiler_flag("-msse2" COMPILER_HAS_SSE2)
+
+    if(COMPILER_HAS_AVX)
+        add_compile_options(-mavx)
+        message(STATUS "Поддержка AVX включена с флагом -mavx")
+    elseif(COMPILER_HAS_SSE2)
+        add_compile_options(-msse2)
+        message(STATUS "Поддержка SSE2 включена с флагом -msse2")
+    else()
+        message(STATUS "Специальные флаги компилятора для AVX/SSE2 не добавлены (используются настройки по умолчанию).")
+    endif()
+endif()
+
+# --- Поиск и связывание библиотек ---
+# Ищем и связываем библиотеки, специфичные для Windows.
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # Ищем библиотеку Psapi.lib.
+    find_library(PSAPI_LIBRARY psapi)
+
+    if(PSAPI_LIBRARY)
+        # Если библиотека найдена, связываем ее с проектом.
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${PSAPI_LIBRARY})
+    else()
+        # Если не найдена, выводим предупреждение.
+        message(WARNING "Библиотека Psapi.lib не найдена. Информация о памяти процесса может быть недоступна.")
+    endif()
+
+    # Связываем с kernel32 (для Beep, GetStdHandle, SetConsoleOutputCP и т.д.)
+    # и user32 (для консольных операций).
+    # Они обычно связываются по умолчанию, но явное указание - хорошая практика.
+    target_link_libraries(${PROJECT_NAME} PRIVATE kernel32 user32)
+endif()
+
+# --- Добавление исполняемого файла ---
+# Создаем исполняемый файл с именем проекта и указываем исходный файл.
+add_executable(${PROJECT_NAME} fluminumTversion.cpp)
+
+# --- Включение заголовочных файлов (если они есть) ---
+# Если у вас есть заголовочные файлы в папке 'include', раскомментируйте строку ниже:
+# target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# --- Установка (опционально) ---
+# Если вы хотите добавить возможность установки проекта, раскомментируйте:
+# install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+
+# --- Тестирование (опционально, требует CTest) ---
+# Если вы хотите добавить тесты, раскомментируйте:
+# enable_testing()
+# add_test(NAME MyTest COMMAND ${PROJECT_NAME} <аргументы_если_нужны>)
+
+# --- Вывод информации о конфигурации ---
+message(STATUS "Конфигурация ${PROJECT_NAME}...")
+message(STATUS "   - Стандарт C++: ${CMAKE_CXX_STANDARD}")
+message(STATUS "   - Тип сборки:   ${CMAKE_BUILD_TYPE}") # (Debug, Release и т.д.)
+message(STATUS "   - Система:       ${CMAKE_SYSTEM_NAME}")
+message(STATUS "   - Компилятор:     ${CMAKE_CXX_COMPILER_ID}")
