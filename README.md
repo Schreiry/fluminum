@@ -9,6 +9,15 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
 [](https://www.microsoft.com/windows/)
 
 -----
+Language variability for documentation : 
+
+[ ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
+
+
+[На русском языке](https://www.microsoft.com/windows/)
+
+
+----
 
 ## ✨ Key Features
 
