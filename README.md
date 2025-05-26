@@ -146,7 +146,7 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 
 ## 📊 Performance Benchmarks: A Leap in Efficiency
 
-The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **4096x4096** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's parallel Strassen (SA\_Time).
+The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's parallel Strassen (SA\_Time).
 
 | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity |
 |---|---|---|---|---|---|---|
