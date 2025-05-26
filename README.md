@@ -151,33 +151,49 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 > [!NOTE]
 > The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's > parallel Strassen (SA\_Time).
 
+[ more detailed tables & more information here](https://github.com/Schreiry/fluminum/blob/main/Doc/detailed%20graphs.md)
+
 > [!IMPORTANT]
 >
-> | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity |
-> |---|---|---|---|---|---|---|
-> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 6.0 GHz | DDR5-5600 | 128GB |
-> | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB |
-> | Intel i5-10400F | 12 MB Intel® Smart Cache | 6/12 | 2.90 GHz | 4.30 GHz | DDR4-2133 | 32GB |
-> | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB |
-> | Intel Xeon X5680 | 12 MB Intel® Smart Cache | 6/12 | 3.33 GHz | 3.60 GHz | DDR3-1600 | 8GB |
-> | AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB |
-> | AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |
+> | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity | OS |
+> |---|---|---|---|---|---|---|---|
+> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 6.0 GHz | DDR5-5600 | 128GB | Windows 11 pro 24H2   |
+> | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB | Windows 11 pro 24H2      |
+> | Intel i5-10400F | 12 MB Intel® Smart Cache | 6/12 | 2.90 GHz | 4.30 GHz | DDR4-2133 | 32GB | Windows 11 pro 24H2    | 
+> | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB | Windows 11 pro 24H2      |
+> | Intel Xeon X5680 | 12 MB Intel® Smart Cache | 6/12 | 3.33 GHz | 3.60 GHz | DDR3-1600 | 24GB | Windows pro 10 22H2   |
+> | AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB | Windows 11 pro 24H2                    | 
+> | AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |  Windows 10 22H2                       |
 > 
 > 
 > 
 > 
-> | Processor | Threads | Naive (OM\_Time, s) | Strassen (SA\_Time, s) | **Total Speedup (OM / SA)** | Parallel Speedup (SA\_1 / SA\_N) |
-> | :--- | :--- | :--- | :--- | :--- | :--- |
-> | **Intel Core i9-13900K** | 1 | 178.498 | 7.6108 | **\~23.4x** | 1.0x |
-> | | **32** | 178.498 | **0.3110** | **\~574.0x** | **\~24.5x** |
-> | **Intel Core i5-12400** | 1 | 220.850 | 11.8431 | **\~18.6x** | 1.0x |
-> | | **12** | 220.850 | **1.8345** | **\~120.4x** | **\~6.5x** |
-> | **Intel Core i7-8600U** | 1 | 712.190 | 15.4439 | **\~46.1x** | 1.0x |
-> | | **8** | 712.190 | **4.3633** | **\~163.2x** | **\~3.5x** |
-> | **AMD Ryzen 5 7535HS** | 1 | 335.483 | 13.1583 | **\~25.5x** | 1.0x |
-> | | **12** | 335.483 | **2.3133** | **\~145.0x** | **\~5.7x** |
-> | **AMD Ryzen 5 7530U** | 1 | 252.505 | 12.9991 | **\~19.4x** | 1.0x |
-> | | **12** | 252.505 | **2.5024** | **\~100.9x** | **\~5.2x** |
+### Performance Summary Table
+This table shows the `SA_Time` execution time for the 1st and maximum threads, as well as the calculated performance metrics: the ratio of average `OM_Time` to `SA_Time` and the `SA_Time` speedup.
+
+## General information for reference :
+
+| Процессор| thread | OM_Time (Avg) | SA_Time (s) | OM/SA (x) | SA Acceleration (x) |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+| **Intel Core i9-13900K** | 1 | 171.80 | 7.6108 | **~22.6x** | 1.0x |
+| | **32** | 171.80 | **0.3110** | **~552.4x** | **~24.5x** |
+| **Intel Core i5-12400** | 1 | 217.70 | 11.84313 | **~18.4x** | 1.0x |
+| | **12** | 217.70 | **1.83452** | **~118.7x** | **~6.5x** |
+| **Intel Core i5-10400F** | 1 | 286.90 | 12.84313 | **~22.3x** | 1.0x |
+| | **12** | 286.90 | **2.13990** | **~134.1x** | **~6.0x** |
+| **Intel Xeon X5680** | 1 | 493.59 | 32.20330 | **~15.3x** | 1.0x |
+| | **12** | 493.59 | **28.28180** | **~17.5x** | **~1.1x** |
+| **Intel Core i7-8600U** | 1 | 725.75 | 15.44390 | **~47.0x** | 1.0x |
+| | **8** | 725.75 | **4.36330** | **~166.3x** | **~3.5x** |
+| **AMD Ryzen 5 7535HS** | 1 | 325.49 | 13.15830 | **~24.7x** | 1.0x |
+| | **12** | 325.49 | **2.31333** | **~140.7x** | **~5.7x** |
+| **AMD Ryzen 5 7530U** | 1 | 254.12 | 12.99914 | **~19.5x** | 1.0x |
+| | **12** | 254.12 | **2.50237** | **~101.6x** | **~5.2x** |
+
+**Note:**
+* `OM_Time (Avg)`: Average `OM_Time` for a given processor across all available threads.
+* `OM/SA (x)`: Calculated as `OM_Time (Avg) / SA_Time (s)`.
+* `SA Speedup (x)`: Calculated as `SA_Time (1 thread) / SA_Time (N threads)`.
 
 > [!TIP]
 > | CPU | Single Thread | Multi-Thread | **Total Speedup** |
