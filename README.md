@@ -1,5 +1,6 @@
 # Fluminum (v2.2): The Apex of High-Performance Matrix Operations in C++ 🚀
-
+   ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+ 
 Welcome to **Fluminum**, an interactive C++ powerhouse engineered to shatter the boundaries of matrix computation speed. This project isn't just another implementation; it's a testament to the synergistic power of **Strassen's algorithm**, advanced **multi-threading with `std::async`**, low-level **SIMD (AVX/SSE2) optimizations**, and intelligent **system-aware resource management**.
 
 Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing performance gains, achieving speedups of up to 574x** compared to traditional methods on modern hardware. It features a user-friendly interactive console interface, real-time progress bars, detailed performance analytics, and robust error handling, making it both a powerful tool and an exceptional learning platform.
@@ -386,6 +387,7 @@ If you use Fluminum in your research, please cite:
 
 This project is licensed under the **MIT License**. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for full details.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 -----
 
 The goal of the project, I remind you. training. I am not better than you. You most likely want to hear that I am worse than you. However, I and you cannot judge this. I know what you do not know, and you know what I cannot know.
