@@ -8,8 +8,8 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
 [](https://isocpp.org/)
 [](https://www.microsoft.com/windows/)
 
------
-Language variability for documentation : 
+
+## 🔠 Language variability for documentation : 
 
 [ ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
 
@@ -17,7 +17,13 @@ Language variability for documentation :
 [На русском языке](https://www.microsoft.com/windows/)
 
 
-----
+## 📚 Documentation
+
+- [📖 User Guide](docs/user-guide.md)
+- [🏗️ Architecture Overview](docs/architecture.md)
+- [⚡ Performance Tuning](docs/performance.md)
+
+
 
 ## ✨ Key Features
 
@@ -88,7 +94,32 @@ Fluminum achieves its performance through a multi-pronged optimization strategy:
 
 -----
 
-## 🏗️ Code Architecture (`fluminumTversion.cpp`)
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Fluminum Architecture                    │
+├─────────────────────────────────────────────────────────────┤
+│  Interactive Console UI  │  Progress Tracking  │  Logging   │
+├─────────────────────────────────────────────────────────────┤
+│           Strassen Algorithm (O(N^2.807))                   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐ │
+│  │  Divide Matrix  │  │ Parallel Tasks  │  │ Combine      │ │
+│  │   (std::async)  │  │   (7 Products)  │  │ Results      │ │
+│  └─────────────────┘  └─────────────────┘  └──────────────┘ │
+├─────────────────────────────────────────────────────────────┤
+│              SIMD-Optimized Base Case                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │     AVX     │  │    SSE2     │  │   Fallback Naive    │  │
+│  │  (4 doubles)│  │ (2 doubles) │  │    (1 double)       │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+├─────────────────────────────────────────────────────────────┤
+│                   System Integration                        │
+│  Memory Management  │  Hardware Detection  │  Error Handling│
+└─────────────────────────────────────────────────────────────┘
+```
+
+
 
 The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstrating these principles.
 
@@ -117,6 +148,15 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 
 The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **4096x4096** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's parallel Strassen (SA\_Time).
 
+| Processor | Cores/Threads | Base Clock | Turbo Clock | Memory |
+|-----------|---------------|------------|-------------|--------|
+| Intel i9-13900K | 24/32 | 3.0 GHz | 5.9 GHz | DDR5-5600 |
+| Intel i5-12400 | 6/12 | 2.5 GHz | 4.4 GHz | DDR5-5200 |
+| AMD Ryzen 5 7535HS | 6/12 | 3.3 GHz | 4.5 GHz | DDR5-4800 |
+
+
+
+
 | Processor | Threads | Naive (OM\_Time, s) | Strassen (SA\_Time, s) | **Total Speedup (OM / SA)** | Parallel Speedup (SA\_1 / SA\_N) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Intel Core i9-13900K** | 1 | 178.498 | 7.6108 | **\~23.4x** | 1.0x |
@@ -130,6 +170,13 @@ The true power of Fluminum is evident in its benchmark results. The following ta
 | **AMD Ryzen 5 7530U** | 1 | 252.505 | 12.9991 | **\~19.4x** | 1.0x |
 | | **12** | 252.505 | **2.5024** | **\~100.9x** | **\~5.2x** |
 
+
+| CPU | Single Thread | Multi-Thread | **Total Speedup** |
+|-----|---------------|--------------|-------------------|
+| **i9-13900K** | 23.4× | **574.0×** | 🏆 **Champion** |
+| **i5-12400** | 18.6× | **120.4×** | 🥈 **Excellent** |
+| **Ryzen 5 7535HS** | 25.5× | **145.0×** | 🥉 **Outstanding** |
+
 **Observations:**
 
   * **Algorithmic Dominance:** Strassen alone provides a 18x to 46x speedup.
@@ -139,6 +186,43 @@ The true power of Fluminum is evident in its benchmark results. The following ta
   * **SIMD Impact:** The already impressive gains are further amplified by the SIMD-optimized base case, though its individual contribution isn't isolated in these high-level tests.
 
 -----
+
+## 🔬 Technical Deep Dive
+
+### Memory Layout Optimization
+
+```cpp
+class Matrix {
+    std::vector<double> data;  // Contiguous memory layout
+    size_t rows, cols;         // Dimensions
+    
+    // Cache-friendly access patterns
+    inline double& operator()(size_t i, size_t j) {
+        return data[i * cols + j];
+    }
+};
+```
+
+### SIMD Implementation
+
+```cpp
+void multiply_naive_avx(const Matrix& A, const Matrix& B, Matrix& C) {
+    for (size_t i = 0; i < A.rows; ++i) {
+        for (size_t j = 0; j < B.cols; j += 4) {
+            __m256d sum = _mm256_setzero_pd();
+            for (size_t k = 0; k < A.cols; ++k) {
+                __m256d a = _mm256_broadcast_sd(&A(i, k));
+                __m256d b = _mm256_loadu_pd(&B(k, j));
+                sum = _mm256_fmadd_pd(a, b, sum);
+            }
+            _mm256_storeu_pd(&C(i, j), sum);
+        }
+    }
+}
+```
+
+
+
 
 ## 🛠️ Requirements & Setup
 
@@ -190,17 +274,61 @@ The program will greet you with an interactive menu:
 
 -----
 
-## 🚀 Future Directions
 
-While Fluminum is already highly optimized, potential avenues for future enhancement include:
+## 📈 Roadmap
 
-  * **Cross-Platform Support:** Refactor Windows API calls for Linux/macOS compatibility.
-  * **Advanced SIMD:** Implement AVX-512 support and explore more complex vectorization strategies.
-  * **GPU Acceleration:** Offload computations to NVIDIA (CUDA) or AMD/Intel (OpenCL/SYCL) GPUs.
-  * **Dynamic Thresholding:** Automatically determine the optimal Strassen/Naive threshold based on hardware and matrix size.
-  * **Cache-Oblivious Algorithms:** Explore alternative recursive layouts for even better cache performance.
-  * **Non-Square & Non-Power-of-Two:** Implement more general Strassen variations or alternative padding schemes.
-  * **Distributed Computing:** Use MPI or similar frameworks to scale across multiple machines.
+### Version 2.2 + (Q2 2025) Now
+
+- [X] SIMD/AVX2 (256) support ;
+
+- [x] acceptable UI ;
+
+- [x] multiple efficiency on the processor
+
+- [x] optimization. compared to previous versions, it is excellent.
+       memory is used more efficiently, smarter and more rationally. when multiplying matrices: 2048X 2048 X 2048X 2048, the program used 1654 ~ 1850 MB, now it uses 800 ~ 990 MB . 
+
+- [x] Strassen's algorithm ; 
+
+- [x] Thresholds ;
+
+- [x] less CPU heating ;
+
+- [ ] coefficient system
+
+- [ ] student conference ;
+
+
+
+
+### Version 2.5 - 2.9 (Q3 2025)
+
+- [ ] Cross-platform support (Linux/macOS) ; 
+ 
+- [ ] AVX-512 support ; 
+ 
+- [ ] Better UI ; 
+ 
+- [ ] Profiling and testing ; 
+ 
+- [ ] Dynamic threshold optimization 
+
+### Version 3.0 (Q4 2025)
+
+- [ ] Distributed computing (MPI) ;
+
+- [ ] open library ;
+ 
+- [ ] Python bindings ; 
+ 
+- [ ] Web assembly port ; 
+ 
+- [ ] GPU acceleration (CUDA/OpenCL) ; 
+ 
+- [ ] Quantum-resistant algorithms
+
+
+
 
 -----
 
@@ -218,6 +346,34 @@ Contributions are highly welcome\! If you have ideas for improvements, bug fixes
 
 Please ensure your pull requests are well-described and reference any relevant issues.
 
+
+
+## Acknowledgments : 
+
+- Deputy Dean of the Georgian Technical University, **Nona Otkhozoria**
+- Intel for AVX/SSE2 documentation
+- Microsoft for Visual Studio compiler optimizations
+- The C++ community for continuous inspiration
+- **Georgian Technical University**
+- To friends for support
+
+----
+
+## 📄 Citation
+
+If you use Fluminum in your research, please cite:
+
+```bibtex
+@software{fluminum2025,
+  title={Fluminum: High-Performance Matrix Operations with Strassen's Algorithm},
+  author={Schreiry(David Greve)},
+  year={2025},
+  version={2.2},
+  url={https://github.com/Schreiry/fluminum}
+}
+```
+
+
 -----
 
 ## 📜 License
@@ -226,4 +382,5 @@ This project is licensed under the **MIT License**. See the [LICENSE](https://ww
 
 -----
 
-This enhanced README aims to provide a comprehensive, engaging, and technically sound overview of the Fluminum project, reflecting the capabilities demonstrated in the `fluminumTversion.cpp` code.
+The goal of the project, I remind you. training. I am not better than you. You most likely want to hear that I am worse than you. However, I and you cannot judge this. I know what you do not know, and you know what I cannot know.
+thank you for your attention, do not judge strictly
