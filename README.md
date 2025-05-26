@@ -364,7 +364,7 @@ Please ensure your pull requests are well-described and reference any relevant i
 If you use Fluminum in your research, please cite:
 
 ```bibtex
-@software{fluminum2025,
+@software{fluminum,
   title={Fluminum: High-Performance Matrix Operations with Strassen's Algorithm},
   author={Schreiry(David Greve)},
   year={2025},
