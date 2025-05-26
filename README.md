@@ -10,11 +10,12 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
 
 
 ## 🔠 Language variability for documentation : 
-
-[ ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
-
-
-[На русском языке](https://www.microsoft.com/windows/)
+ > [!TIP]
+ > 
+ > [ ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
+ >
+ >
+ > [На русском языке](https://www.microsoft.com/windows/)
 
 
 ## 📚 Documentation
@@ -146,38 +147,41 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 
 ## 📊 Performance Benchmarks: A Leap in Efficiency
 
-The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's parallel Strassen (SA\_Time).
+> [!NOTE]
+> The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's > parallel Strassen (SA\_Time).
 
-| Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity |
-|---|---|---|---|---|---|---|
-| Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 5.9 GHz | DDR5-5600 | 128GB |
-| Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB |
-| Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB |
-| AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB |
-| AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |
+> [!IMPORTANT]
+>
+> | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity |
+> |---|---|---|---|---|---|---|
+> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 5.9 GHz | DDR5-5600 | 128GB |
+> | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB |
+> | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB |
+> | AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB |
+> | AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |
+> 
+> 
+> 
+> 
+> | Processor | Threads | Naive (OM\_Time, s) | Strassen (SA\_Time, s) | **Total Speedup (OM / SA)** | Parallel Speedup (SA\_1 / SA\_N) |
+> | :--- | :--- | :--- | :--- | :--- | :--- |
+> | **Intel Core i9-13900K** | 1 | 178.498 | 7.6108 | **\~23.4x** | 1.0x |
+> | | **32** | 178.498 | **0.3110** | **\~574.0x** | **\~24.5x** |
+> | **Intel Core i5-12400** | 1 | 220.850 | 11.8431 | **\~18.6x** | 1.0x |
+> | | **12** | 220.850 | **1.8345** | **\~120.4x** | **\~6.5x** |
+> | **Intel Core i7-8600U** | 1 | 712.190 | 15.4439 | **\~46.1x** | 1.0x |
+> | | **8** | 712.190 | **4.3633** | **\~163.2x** | **\~3.5x** |
+> | **AMD Ryzen 5 7535HS** | 1 | 335.483 | 13.1583 | **\~25.5x** | 1.0x |
+> | | **12** | 335.483 | **2.3133** | **\~145.0x** | **\~5.7x** |
+> | **AMD Ryzen 5 7530U** | 1 | 252.505 | 12.9991 | **\~19.4x** | 1.0x |
+> | | **12** | 252.505 | **2.5024** | **\~100.9x** | **\~5.2x** |
 
-
-
-
-| Processor | Threads | Naive (OM\_Time, s) | Strassen (SA\_Time, s) | **Total Speedup (OM / SA)** | Parallel Speedup (SA\_1 / SA\_N) |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Intel Core i9-13900K** | 1 | 178.498 | 7.6108 | **\~23.4x** | 1.0x |
-| | **32** | 178.498 | **0.3110** | **\~574.0x** | **\~24.5x** |
-| **Intel Core i5-12400** | 1 | 220.850 | 11.8431 | **\~18.6x** | 1.0x |
-| | **12** | 220.850 | **1.8345** | **\~120.4x** | **\~6.5x** |
-| **Intel Core i7-8600U** | 1 | 712.190 | 15.4439 | **\~46.1x** | 1.0x |
-| | **8** | 712.190 | **4.3633** | **\~163.2x** | **\~3.5x** |
-| **AMD Ryzen 5 7535HS** | 1 | 335.483 | 13.1583 | **\~25.5x** | 1.0x |
-| | **12** | 335.483 | **2.3133** | **\~145.0x** | **\~5.7x** |
-| **AMD Ryzen 5 7530U** | 1 | 252.505 | 12.9991 | **\~19.4x** | 1.0x |
-| | **12** | 252.505 | **2.5024** | **\~100.9x** | **\~5.2x** |
-
-
-| CPU | Single Thread | Multi-Thread | **Total Speedup** |
-|-----|---------------|--------------|-------------------|
-| **i9-13900K** | 23.4× | **574.0×** | 🏆 **Champion** |
-| **i5-12400** | 18.6× | **120.4×** | 🥈 **Excellent** |
-| **Ryzen 5 7535HS** | 25.5× | **145.0×** | 🥉 **Outstanding** |
+> [!TIP]
+> | CPU | Single Thread | Multi-Thread | **Total Speedup** |
+> |-----|---------------|--------------|-------------------|
+> | **i9-13900K** | 23.4× | **574.0×** | 🏆 **Champion** |
+> | **i5-12400** | 18.6× | **120.4×** | 🥈 **Excellent** |
+> | **Ryzen 5 7535HS** | 25.5× | **145.0×** | 🥉 **Outstanding** |
 
 **Observations:**
 
