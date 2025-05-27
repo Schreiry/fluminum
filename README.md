@@ -16,7 +16,7 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
  > [ ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
  >
  >
- > [На русском языке](https://www.microsoft.com/windows/)
+ > [На русском языке](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
 
 
 ## 📚 Documentation
