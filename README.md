@@ -21,7 +21,7 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
 
 ## 📚 Documentation
 
-- [📖 User Guide](docs/user-guide.md)
+- [📖 User Guide](https://github.com/Schreiry/fluminum/blob/main/Doc/User%20Guide.md)
 - [🏗️ Architecture Overview](docs/architecture.md)
 - [⚡ Performance Tuning](docs/performance.md)
 
