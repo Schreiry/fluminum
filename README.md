@@ -159,13 +159,13 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 >
 > | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity | OS |
 > |---|---|---|---|---|---|---|---|
-> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 6.0 GHz | DDR5-5600 | 128GB | Windows 11 pro 24H2   |
-> | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB | Windows 11 pro 24H2      |
-> | Intel i5-10400F | 12 MB Intel® Smart Cache | 6/12 | 2.90 GHz | 4.30 GHz | DDR4-2133 | 32GB | Windows 11 pro 24H2    | 
-> | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB | Windows 11 pro 24H2      |
-> | Intel Xeon X5680 | 12 MB Intel® Smart Cache | 6/12 | 3.33 GHz | 3.60 GHz | DDR3-1600 | 24GB | Windows pro 10 22H2   |
-> | AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB | Windows 11 pro 24H2                    | 
-> | AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |  Windows 10 22H2                       |
+> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 6.0 GHz | DDR5-5600 | 128GB | Windows 11 Pro 24H2   |
+> | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB | Windows 11 Pro 24H2      |
+> | Intel i5-10400F | 12 MB Intel® Smart Cache | 6/12 | 2.90 GHz | 4.30 GHz | DDR4-2133 | 32GB | Windows 11 Pro 24H2    | 
+> | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB | Windows 11 Pro 24H2      |
+> | Intel Xeon X5680 | 12 MB Intel® Smart Cache | 6/12 | 3.33 GHz | 3.60 GHz | DDR3-1600 | 24GB | Windows 10 Pro 22H2   |
+> | AMD Ryzen 5 7535HS | 16 MB | 6/12 | 3.3 GHz | 4.55 GHz | DDR5-4800 | 16GB | Windows 11 Pro 24H2                    | 
+> | AMD Ryzen 5 7530U | 16 MB | 6/12 | 2 GHz | 4.4 GHz | DDR4-3600 | 16GB |  Windows 10 Pro 22H2                       |
 > 
 > 
 > 
