@@ -330,7 +330,11 @@ The program will greet you with an interactive menu:
 
 ### Version 2.5 - 2.9 (Q3 2025)
 
-- [ ] Cross-platform support (Linux/macOS) ; 
+- [ ] Cross-platform support (Linux/macOS) ;
+
+- [ ] Coppersmith–Winograd Algorithm
+
+- [ ] Tiling (Block Matrix Multiplication)
  
 - [ ] AVX-512 support ; 
  
