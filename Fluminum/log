@@ -1,0 +1,2 @@
+Operation,RowsA,ColsA,RowsB,ColsB,ResultRows,ResultCols,TotalElementsResult,DurationSeconds_Chrono,DurationNanoseconds_Chrono,DurationSeconds_QPC,ThreadsUsed,CoresDetected,PeakMemoryMB,StrassenThreshold
+Multiplication,1024,1024,1024,1024,1024,1024,1048576,5.5842439000,5584243900,5.5842439000,8,8,406,128
