@@ -13,13 +13,13 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
 ## 🔠 Language variability for documentation : 
  > [!TIP]
  > 
- > [ 🇬🇪 ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
+ > [ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
  >
- > [ 🇷🇺 На русском языке](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
+ > [На русском языке](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
  >
- > [ 🇺🇦 українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+ > [українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
  >
- > [ 🇫🇷 en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+ > [en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
 
 
 ## 📚 Documentation
@@ -203,11 +203,11 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 | :--- | :--- | ---: | ---: | ---: | ---: |
 | **Intel Core i9-14900** | 1 | 202.713 | 1.76698 | **~114,7X** | 1.0x |
 | | **32** | 202.713 | **0.799268** | **~253,6X** | **~24.5x** |
-| **Intel Core i9-13900K** | 1 | 171.801 | 7.6108 | **~22.6x** | 1.0x |
+| **Intel Core i9-13900K** | 1 | 171.801 | 1.8108 | **~94.8x** | 1.0x |
 | | **32** | 171.80 | **0.3110** | **~552.4x** | **~24.5x** |
-| **Intel Core i5-12400** | 1 | 217.70 | 11.84313 | **~18.4x** | 1.0x |
+| **Intel Core i5-12400** | 1 | 217.70 | 9.10901 | **~25.5x** | 1.0x |
 | | **12** | 217.70 | **1.83452** | **~118.7x** | **~6.5x** |
-| **Intel Core i5-10400F** | 1 | 286.90 | 12.84313 | **~22.3x** | 1.0x |
+| **Intel Core i5-10400F** | 1 | 286.90 | 10.84313 | **~22.3x** | 1.0x |
 | | **12** | 286.90 | **2.13990** | **~134.1x** | **~6.0x** |
 | **Intel Xeon X5680** | 1 | 493.59 | 32.20330 | **~15.3x** | 1.0x |
 | | **12** | 493.59 | **28.28180** | **~17.5x** | **~1.1x** |
@@ -223,12 +223,19 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 * `OM/SA (x)`: Calculated as `OM_Time (Avg) / SA_Time (s)`.
 * `SA Speedup (x)`: Calculated as `SA_Time (1 thread) / SA_Time (N threads)`.
 
-> [!TIP]
-> | CPU | Single Thread | Multi-Thread | **Total Speedup** |
-> |-----|---------------|--------------|-------------------|
-> | **i9-13900K** | 114.7× | **574.0×** |  **Champion** |
-> | **i9-14900** | 18.6× | **120.4×** | 🥈 **Excellent** |
-> | **Ryzen 5 7535HS** | 25.5× | **145.0×** | 🥉 **Outstanding** |
+
+![СE1](https://github.com/user-attachments/assets/745af4b5-09e5-4e7b-ba54-20f77780805c)
+![СE2](https://github.com/user-attachments/assets/206613f0-b6ad-4435-b27d-c1fd90e2fcdb)
+![СE3](https://github.com/user-attachments/assets/7a29d4a9-c72f-4fc1-a6b1-bcd69a8e1f88)
+![СE4](https://github.com/user-attachments/assets/66d21bf5-d38b-4d3a-98eb-3d520940720a)
+![CE8](https://github.com/user-attachments/assets/a1544134-1202-4921-a807-efd351648289)
+![CE9](https://github.com/user-attachments/assets/def7a75f-ee97-40cd-a09b-37147c6fbb43)
+![CE10](https://github.com/user-attachments/assets/162222a6-70b1-4ebb-8980-48d73f58eaf5)
+![CE11](https://github.com/user-attachments/assets/8474c8f2-4e3f-4af4-add6-989ca698a490)
+![CE12](https://github.com/user-attachments/assets/4d71ad83-a2b0-4a94-bad4-90fb98170c55)
+![CE13](https://github.com/user-attachments/assets/d6dc8e82-a74d-4558-bf67-0bb841e39fb1)
+![CE14](https://github.com/user-attachments/assets/208f9842-5f12-4086-adf8-5e411bf8a065)
+
 
 **Observations:**
 
@@ -237,6 +244,16 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
   * **Synergistic Explosion:** The combined effect yields incredible 100x to 574x improvements, turning minute-long calculations into sub-second tasks.
   * **Scalability:** The performance scales well with core count, demonstrating efficient parallelization.
   * **SIMD Impact:** The already impressive gains are further amplified by the SIMD-optimized base case, though its individual contribution isn't isolated in these high-level tests.
+
+
+
+
+> [!TIP]
+> | CPU | Single Thread | Multi-Thread | **Total Speedup** |
+> |-----|---------------|--------------|-------------------|
+> | **i9-13900K** | 94.8× | **574.0X** | 🥇 **Champion** |
+> | **i9-14900** | 114.6× | **120.4X** | 🥈 **Excellent** |
+> | **i5-12400** | 25.5× | **23.8X×** | 🥉 **Good** |
 
 -----
 
@@ -415,9 +432,10 @@ Please ensure your pull requests are well-described and reference any relevant i
 - To friends for support  
 special thanks : 
 - [@Alexander Tsurtsumia](https://github.com/AlexanderTsurtsumia) ;
+- [@Ana Gamyrelidze](https://www.instagram.com/mirek0_/) ;
 - Andrey Greve ;
 - Alexander Greve ; 
-- Cotne Putkarazde ; 
+- Tsotne Putkarazde ;
 
 
 ![sponsortocat](https://github.com/user-attachments/assets/967e22ed-47b8-4387-8bdf-9b652ec08b21)
