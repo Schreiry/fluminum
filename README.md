@@ -1,4 +1,4 @@
-# Fluminum (v2.2): The Apex of High-Performance Matrix Operations in C++ 🚀
+# Fluminum (v2.2): The Apex of High-Performance Matrix Operations in C++ 🚀 
    ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
  
 Welcome to **Fluminum**, an interactive C++ powerhouse engineered to shatter the boundaries of matrix computation speed. This project isn't just another implementation; it's a testament to the synergistic power of **Strassen's algorithm**, advanced **multi-threading with `std::async`**, low-level **SIMD (AVX/SSE2) optimizations**, and intelligent **system-aware resource management**.
@@ -163,9 +163,15 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
       * **`compareMatricesInternal`**: The recursive worker for comparison.
   * **Main Loop (`main`, `run_one_operation`)**: Drives the interactive user interface, handles input validation, orchestrates operations, displays results, and manages logging.
 
------
 
-## 📊 Performance Benchmarks: A Leap in Efficiency
+
+# <img src="https://media.giphy.com/media/iY8CRBdQXODJSCERIr/giphy.gif" width="35"> Performance Benchmarks: A Leap in Efficiency
+
+
+![NUX_Octodex](https://github.com/user-attachments/assets/82a26c8c-149e-4e48-a460-8b6323767505)
+
+
+
 
 > [!NOTE]
 > The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's > parallel Strassen (SA\_Time).
@@ -195,7 +201,9 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 
 | Процессор| thread | OM_Time (Avg) | SA_Time (s) | OM/SA (x) | SA Acceleration (x) |
 | :--- | :--- | ---: | ---: | ---: | ---: |
-| **Intel Core i9-13900K** | 1 | 171.80 | 7.6108 | **~22.6x** | 1.0x |
+| **Intel Core i9-14900** | 1 | 202.713 | 1.76698 | **~114,7X** | 1.0x |
+| | **32** | 202.713 | **0.799268** | **~253,6X** | **~24.5x** |
+| **Intel Core i9-13900K** | 1 | 171.801 | 7.6108 | **~22.6x** | 1.0x |
 | | **32** | 171.80 | **0.3110** | **~552.4x** | **~24.5x** |
 | **Intel Core i5-12400** | 1 | 217.70 | 11.84313 | **~18.4x** | 1.0x |
 | | **12** | 217.70 | **1.83452** | **~118.7x** | **~6.5x** |
@@ -218,8 +226,8 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 > [!TIP]
 > | CPU | Single Thread | Multi-Thread | **Total Speedup** |
 > |-----|---------------|--------------|-------------------|
-> | **i9-13900K** | 23.4× | **574.0×** | 🏆 **Champion** |
-> | **i5-12400** | 18.6× | **120.4×** | 🥈 **Excellent** |
+> | **i9-13900K** | 114.7× | **574.0×** |  **Champion** |
+> | **i9-14900** | 18.6× | **120.4×** | 🥈 **Excellent** |
 > | **Ryzen 5 7535HS** | 25.5× | **145.0×** | 🥉 **Outstanding** |
 
 **Observations:**
@@ -404,7 +412,15 @@ Please ensure your pull requests are well-described and reference any relevant i
 - Microsoft for Visual Studio compiler optimizations
 - The C++ community for continuous inspiration
 - **Georgian Technical University**
-- To friends for support
+- To friends for support  
+special thanks : 
+- [@Alexander Tsurtsumia](https://github.com/AlexanderTsurtsumia) ;
+- Andrey Greve ;
+- Alexander Greve ; 
+- Cotne Putkarazde ; 
+
+
+![sponsortocat](https://github.com/user-attachments/assets/967e22ed-47b8-4387-8bdf-9b652ec08b21)
 
 ----
 
