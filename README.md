@@ -174,9 +174,10 @@ The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstratin
 
 > [!IMPORTANT]
 >
-> | Processor | L3 Cache | Cores/Threads | Base Clock | Turbo Clock | Memory | Memory Capacity | OS |
+> | Processor | L3 Cache | Cores/Threads | Base Clock(Perf.Core/Effi.Core) | Turbo Clock(Perf.Core/Effi.Core) | Memory | Memory Capacity | OS |
 > |---|---|---|---|---|---|---|---|
-> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz | 6.0 GHz | DDR5-5600 | 128GB | Windows 11 Pro 24H2   |
+> | Intel i9-14900 | 36 MB Intel® Smart Cache | 24/32 | 2.0 GHz/1.5 GHz | 5.8 GHz/4.3 GHz | DDR5-5200 | 32GB | Windows 11 Pro 24H2   |
+> | Intel i9-13900K | 36 MB Intel® Smart Cache | 24/32 | 3.0 GHz/2.2 GHz | 6.0 GHz / 5.40 GHz | DDR5-4800 | 128GB | Windows 11 Pro 24H2   |
 > | Intel i5-12400 | 18 MB Intel® Smart Cache | 6/12 | 2.4 GHz | 4.4 GHz | DDR5-5200 | 32GB | Windows 11 Pro 24H2      |
 > | Intel i5-10400F | 12 MB Intel® Smart Cache | 6/12 | 2.90 GHz | 4.30 GHz | DDR4-2133 | 32GB | Windows 11 Pro 24H2    | 
 > | Intel i7-8600U | 8 MB Intel® Smart Cache | 4/8 | 1.90 GHz | 4.20 GHz | DDR4-3200 | 16GB | Windows 11 Pro 24H2      |
