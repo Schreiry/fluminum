@@ -15,12 +15,11 @@ Forget the days of sluggish $O(N^3)$ operations. Fluminum delivers **astonishing
  > 
  > [ 🇬🇪 ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
  >
- >
  > [ 🇷🇺 На русском языке](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
->
-> [ 🇺🇦 українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
->
-> [ 🇫🇷 en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+ >
+ > [ 🇺🇦 українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+ >
+ > [ 🇫🇷 en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
 
 
 ## 📚 Documentation
@@ -61,6 +60,9 @@ Volker Strassen's 1969 algorithm changed the game. It applies a "divide and conq
 
 $$A = \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{bmatrix}, \quad B = \begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}, \quad C = \begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \end{bmatrix}$$
 
+<details>
+<summary>more details</summary>
+   
   * $S\_1 = B\_{12} - B\_{22}$
   * $S\_2 = A\_{11} + A\_{12}$
   * $S\_3 = A\_{21} + A\_{22}$
@@ -83,11 +85,13 @@ $$A = \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{bmatrix}, \quad B 
   * $C\_{21} = P\_2 + P\_4$
   * $C\_{22} = P\_1 - P\_2 + P\_3 + P\_6$
 
+</details>
+
 This recursive reduction from 8 to 7 multiplications leads to the $O(N^{2.807})$ complexity. While the number of additions/subtractions increases, for large N, the reduction in multiplications dominates, leading to significant speedups. Fluminum manages the overhead by **switching to an SIMD-optimized naive method below a configurable threshold**, ensuring peak performance across all scales.
 
 -----
-
-## ⚙️ The Fluminum Edge: Deep Optimizations
+<details>
+<summary> ## ⚙️ The Fluminum Edge: Deep Optimizations </summary>
 
 Fluminum achieves its performance through a multi-pronged optimization strategy:
 
@@ -99,30 +103,41 @@ Fluminum achieves its performance through a multi-pronged optimization strategy:
 6.  **User Experience Focus**: A `display_progress` function runs in a separate thread, using an `std::atomic<int>` counter to provide a **real-time progress bar** during long computations. The console output is enhanced with colors and structured boxes for better readability.
 
 -----
-
+</details>
 ## 🏗️ Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Fluminum Architecture                    │
-├─────────────────────────────────────────────────────────────┤
-│  Interactive Console UI  │  Progress Tracking  │  Logging   │
-├─────────────────────────────────────────────────────────────┤
-│           Strassen Algorithm (O(N^2.807))                   │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐ │
-│  │  Divide Matrix  │  │ Parallel Tasks  │  │ Combine      │ │
-│  │   (std::async)  │  │   (7 Products)  │  │ Results      │ │
-│  └─────────────────┘  └─────────────────┘  └──────────────┘ │
-├─────────────────────────────────────────────────────────────┤
-│              SIMD-Optimized Base Case                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │     AVX     │  │    SSE2     │  │   Fallback Naive    │  │
-│  │  (4 doubles)│  │ (2 doubles) │  │    (1 double)       │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
-├─────────────────────────────────────────────────────────────┤
-│                   System Integration                        │
-│  Memory Management  │  Hardware Detection  │  Error Handling│
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD;
+    Fluminum-->UI;
+    Fluminum-->ProgressTracking["Progress Tracking"];
+    Fluminum-->Logging;
+    Fluminum-->ASCITimeline["ASCII timeline of time"];
+    UI-->SA["S.A"];
+    ProgressTracking-->SA;
+    Logging-->SA;
+    ASCITimeline-->SA;
+    SA-->CombineResults["Combine Results"];
+    SA-->ThreadsParallel["Threads parallel"];
+    SA-->DivideMatrix["Divide Matrix"];
+    CombineResults-->SIMDAVXOptimized["SIMD&AVX Optimized"];
+    SIMDAVXOptimized-->SystemIntegration["System Integration"];
+    SystemIntegration-->MemoryManagement["Memory Management"];
+    SystemIntegration-->HardwareDetection["Hardware Detection"];
+    SystemIntegration-->ErrorHandling["Error Handling"];
+
+    %% Стили для узлов
+    classDef mainNode fill:#ff6b6b,stroke:#d63031,stroke-width:3px,color:#fff;
+    classDef processNode fill:#4ecdc4,stroke:#00b894,stroke-width:2px,color:#fff;
+    classDef coreNode fill:#ffe66d,stroke:#fdcb6e,stroke-width:3px,color:#2d3436;
+    classDef optimNode fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px,color:#fff;
+    classDef systemNode fill:#fd79a8,stroke:#e84393,stroke-width:2px,color:#fff;
+
+    %% Применение стилей
+    class Fluminum mainNode;
+    class UI,ProgressTracking,Logging,ASCITimeline processNode;
+    class SA coreNode;
+    class CombineResults,ThreadsParallel,DivideMatrix,SIMDAVXOptimized optimNode;
+    class SystemIntegration,MemoryManagement,HardwareDetection,ErrorHandling systemNode;
 ```
 
 
