@@ -435,7 +435,7 @@ special thanks :
 - [@Ana Gamyrelidze](https://www.instagram.com/mirek0_/) ;
 - Andrey Greve ;
 - Alexander Greve ; 
-- Tsotne Putkarazde ;
+- Tsotne Daraseli ;
 
 
 ![sponsortocat](https://github.com/user-attachments/assets/967e22ed-47b8-4387-8bdf-9b652ec08b21)
