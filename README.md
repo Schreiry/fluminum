@@ -432,7 +432,6 @@ Please ensure your pull requests are well-described and reference any relevant i
 - To friends for support  
 special thanks : 
 - [@Alexander Tsurtsumia](https://github.com/AlexanderTsurtsumia) ;
-- [@Ana Gamyrelidze](https://www.instagram.com/mirek0_/) ;
 - Andrey Greve ;
 - Alexander Greve ; 
 - Tsotne Daraseli ;
