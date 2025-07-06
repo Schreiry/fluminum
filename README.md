@@ -366,7 +366,7 @@ The program will greet you with an interactive menu:
 
 - [ ] coefficient system
 
-- [ ] student conference ;
+- [X] student conference ;
 
 
 
