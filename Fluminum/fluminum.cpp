@@ -25,7 +25,7 @@
 #include <queue>       // For std::queue (used in ThreadPool)
 #include <mutex>       // For std::mutex, std::unique_lock
 #include <condition_variable> // For std::condition_variable
-#include "PerformanceMonitor.h" // <-- ИНКЛЮД ДЛЯ МОНИТОРА
+#include "PerformanceMonitor.h" // <-- INCLUDE FOR MONITORING resources in the second console window
 
 // Include for SIMD intrinsics (Windows, for Intel/AMD processors supporting AVX)
 #ifdef _MSC_VER
