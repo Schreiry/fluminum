@@ -1,28 +1,84 @@
 #pragma once
 
-// --- Includes for Performance Monitor ---
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <pdh.h>
 
-// Structure to hold all performance data
-struct PerformanceData {
-    std::string cpuName;
-    int coreCount;
-    double totalCpuUsage;
-    std::vector<double> coreUsage;
-    unsigned long long totalRamMB;
-    unsigned long long usedRamMB;
-    double ramUsagePercentage;
+// --- Структуры для хранения данных ---
+
+// Статическая информация о кэше процессора
+struct CacheInfo {
+    DWORD level;
+    DWORD size; // в байтах
+    DWORD lineSize;
+    DWORD associativity;
 };
 
-// --- Function Declarations for the Performance Monitor ---
+// Статическая информация о системе (собирается один раз)
+struct StaticSystemInfo {
+    std::string cpuName;
+    int logicalCoreCount;
+    std::vector<CacheInfo> caches;
+};
 
-/**
- * @brief Главная функция для окна мониторинга производительности.
- *
- * Запускает цикл, который непрерывно собирает и отображает системные метрики.
- * Эта функция предназначена для запуска в отдельном процессе.
- * @return Код выхода (0 при успехе).
- */
-int RunPerformanceMonitor();
+// Динамические данные о производительности (обновляются постоянно)
+struct PerformanceData {
+    double totalCpuUsage = 0.0;
+    std::vector<double> coreUsage;
+    unsigned long long totalRamMB = 0;
+    unsigned long long availableRamMB = 0;
+    double pageFaultsPerSec = 0.0;
+};
+
+// --- Основной класс монитора производительности ---
+
+class PerformanceMonitor {
+public:
+    PerformanceMonitor();
+    ~PerformanceMonitor();
+
+    // Запрещаем копирование, чтобы избежать проблем с дескрипторами
+    PerformanceMonitor(const PerformanceMonitor&) = delete;
+    PerformanceMonitor& operator=(const PerformanceMonitor&) = delete;
+
+    // Главный цикл монитора
+    void Run();
+
+private:
+    // --- Методы инициализации ---
+    void InitConsole();
+    void InitPdhQueries();
+    void QueryStaticInfo();
+
+    // --- Методы сбора данных ---
+    void CollectDynamicData();
+    bool RestartPdhQuery();
+
+    // --- Методы рендеринга ---
+    void Render();
+    void PrintToBuffer(int x, int y, const std::string& text);
+    void PrintBar(int x, int y, int width, double percentage, const std::string& label);
+
+    // --- Консольные буферы для плавной отрисовки ---
+    HANDLE consoleHandles_[2]; // 0 - back buffer, 1 - front buffer
+    int activeBufferIndex_;
+    CHAR_INFO* charBuffer_;
+    COORD bufferSize_;
+    COORD bufferCoord_;
+    SMALL_RECT consoleWriteArea_;
+
+    // --- Системная информация ---
+    StaticSystemInfo staticInfo_;
+    PerformanceData perfData_;
+
+    // --- Объекты для PDH ---
+    PDH_HQUERY queryHandle_;
+    PDH_HCOUNTER totalCpuCounter_;
+    std::vector<PDH_HCOUNTER> coreCounters_;
+    PDH_HCOUNTER availableMemoryCounter_;
+    PDH_HCOUNTER pageFaultsCounter_;
+};
+
+// --- Точка входа для процесса мониторинга ---
+int RunPerformanceMonitorEntry();

@@ -2,59 +2,60 @@
 #define NOMINMAX
 
 // --- Includes ---
-#include <windows.h> // For Windows API (Memory status, Process info, SetConsoleOutputCP, QueryPerformanceCounter/Frequency, Beep)
-#include <psapi.h>   // For GetProcessMemoryInfo
-#include <iostream>  // For input/output (cout, cin, cerr)
-#include <vector>    // For std::vector (used for matrix data)
-#include <string>    // For std::string
-#include <thread>    // For std::thread, std::thread::hardware_concurrency, std::this_thread::sleep_for
-#include <stdexcept> // For exception classes (std::runtime_error, etc.)
-#include <random>    // For random number generation
-#include <iomanip>   // For std::setprecision, std::fixed, std::setw
-#include <cmath>     // For std::log2, std::ceil, std::pow, std::abs
-#include <future>    // For std::async, std::future, std::packaged_task
-#include <chrono>    // For timing (high_resolution_clock)
-#include <atomic>    // For std::atomic (thread-safe counter for progress)
-#include <algorithm> // For std::max, std::min, std::swap, std::abs
-#include <limits>    // For std::numeric_limits (used in input clearing, number range)
-#include <functional>// For std::ref, std::bind
-#include <fstream>   // For file input/output (std::ifstream, std::ofstream)
-#include <sstream>   // For string stream processing (std::stringstream)
-#include <cctype>    // For tolower, isspace
-#include <type_traits> // For std::is_same, std::invoke_result_t
-#include <queue>       // For std::queue (used in ThreadPool)
-#include <mutex>       // For std::mutex, std::unique_lock
-#include <condition_variable> // For std::condition_variable
-#include "PerformanceMonitor.h" // <-- INCLUDE FOR MONITORING resources in the second console window
+#include <windows.h>
+#include <psapi.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <thread>
+#include <stdexcept>
+#include <random>
+#include <iomanip>
+#include <cmath>
+#include <future>
+#include <chrono>
+#include <atomic>
+#include <algorithm>
+#include <limits>
+#include <functional>
+#include <fstream>
+#include <sstream>
+#include <cctype>
+#include <type_traits>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include "PerformanceMonitor.h" // Инклюд для точки входа монитора
 
-// Include for SIMD intrinsics (Windows, for Intel/AMD processors supporting AVX)
 #ifdef _MSC_VER
-#include <intrin.h> // For __cpuidex and _xgetbv
+#include <intrin.h>
 #endif
 #if defined(__AVX__) || (defined(_MSC_VER) && defined(__AVX__))
-#include <immintrin.h> // AVX intrinsics
+#include <immintrin.h>
 #define HAS_AVX
-const int SIMD_VECTOR_SIZE_DOUBLE = 4; // AVX processes 4 doubles at once
+const int SIMD_VECTOR_SIZE_DOUBLE = 4;
 #elif defined(__SSE2__) || (defined(_MSC_VER) && defined(__SSE2__))
-#include <emmintrin.h> // SSE2 intrinsics
+#include <emmintrin.h>
 #define HAS_SSE2
-const int SIMD_VECTOR_SIZE_DOUBLE = 2; // SSE2 processes 2 doubles at once
+const int SIMD_VECTOR_SIZE_DOUBLE = 2;
 #else
-const int SIMD_VECTOR_SIZE_DOUBLE = 1; // Scalar processing
+const int SIMD_VECTOR_SIZE_DOUBLE = 1;
 #endif
 
-
-// Link with Psapi.lib (Specific to MSVC compiler, use -lpsapi for g++)
 #pragma comment(lib, "Psapi.lib")
 
-// Using directives for common elements
 using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
 using std::cerr;
 
+// ... (весь ваш код форматирования, классов, вычислений остается без изменений) ...
+// Я вставлю только измененные функции `main` и добавлю `LaunchMonitorProcess`
 
+// --- Console Formatting, SystemInfo, Matrix Class, ThreadPool, etc. ---
+// ... (Your existing code from line 30 to ~1100 remains unchanged)
+// [Я опускаю ваш код для краткости, так как он не меняется. Вставьте его сюда]
 // --- Console Formatting ---
 const string RED = "\033[1;31m";
 const string GREEN = "\033[1;32m";
@@ -1763,57 +1764,62 @@ void run_one_operation() {
     }
 }
 
-/**
- * @brief НОВАЯ ФУНКЦИЯ: Запускает дочерний процесс для мониторинга производительности.
- */
+
+// ИСПРАВЛЕНО: Функция для запуска монитора в новом процессе
 void LaunchMonitorProcess() {
     STARTUPINFOA si;
-    // ИСПРАВЛЕНО: Замена PROCESS_INFORMATIONA на правильный тип PROCESS_INFORMATION.
     PROCESS_INFORMATION pi;
 
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    char exePath[MAX_PATH];
-    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+    // Получаем путь к текущему исполняемому файлу
+    char selfPath[MAX_PATH];
+    if (!GetModuleFileNameA(NULL, selfPath, MAX_PATH)) {
+        cerr << RED << "Error: GetModuleFileNameA failed. Cannot launch monitor." << RESET << endl;
+        return;
+    }
 
-    // Добавляем флаг --monitor к командной строке
-    std::string cmdLine = "\"";
-    cmdLine += exePath;
-    cmdLine += "\" --monitor";
+    // Формируем командную строку: "path\to\program.exe --monitor"
+    string commandLine = "\"";
+    commandLine += selfPath;
+    commandLine += "\" --monitor";
 
-    // CreateProcess требует non-const char* для командной строки
-    std::vector<char> cmdLineVec(cmdLine.begin(), cmdLine.end());
-    cmdLineVec.push_back('\0');
+    // CreateProcess требует не-константный char* для командной строки
+    std::vector<char> commandLineVec(commandLine.begin(), commandLine.end());
+    commandLineVec.push_back('\0');
 
+
+    // Запускаем новый процесс с новой консолью
     if (!CreateProcessA(
-        NULL,           // Имя исполняемого модуля
-        cmdLineVec.data(),// Командная строка
+        NULL,           // Имя приложения (используем командную строку)
+        commandLineVec.data(), // Командная строка
         NULL,           // Дескриптор процесса не наследуется
         NULL,           // Дескриптор потока не наследуется
-        FALSE,          // Установка наследования дескрипторов в FALSE
-        CREATE_NEW_CONSOLE, // Создать новую консоль для процесса
+        FALSE,          // Наследование дескрипторов отключено
+        CREATE_NEW_CONSOLE, // Создать новую консоль для дочернего процесса
         NULL,           // Использовать окружение родителя
-        NULL,           // Использовать начальный каталог родителя
-        &si,            // Указатель на структуру STARTUPINFOA
+        NULL,           // Использовать текущую директорию родителя
+        &si,            // Указатель на структуру STARTUPINFO
         &pi)            // Указатель на структуру PROCESS_INFORMATION
-        ) {
-        cerr << RED << "Error: Failed to launch performance monitor (CreateProcess failed with code: " << GetLastError() << ")" << RESET << endl;
+        )
+    {
+        cerr << RED << "Error: CreateProcess failed (" << GetLastError() << "). Cannot launch monitor." << RESET << endl;
+        return;
     }
-    else {
-        // Закрываем дескрипторы сразу, так как они нам не нужны
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-    }
-}
 
+    // Закрываем дескрипторы процесса и потока, так как они нам не нужны
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+}
 
 // --- Main Function with Interactive Loop ---
 int main(int argc, char* argv[]) {
-    // --- ПРОВЕРКА АРГУМЕНТОВ КОМАНДНОЙ СТРОКИ ---
-    if (argc > 1 && std::string(argv[1]) == "--monitor") {
-        return RunPerformanceMonitor();
+    // ИСПРАВЛЕНО: Проверяем, был ли процесс запущен с флагом --monitor
+    if (argc > 1 && strcmp(argv[1], "--monitor") == 0) {
+        // Если да, то этот процесс должен быть только монитором
+        return RunPerformanceMonitorEntry();
     }
 
     // --- ОСНОВНАЯ ЛОГИКА ПРОГРАММЫ ---
@@ -1828,7 +1834,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // --- Запуск дочернего процесса мониторинга ---
     LaunchMonitorProcess();
 
     initializePerformanceCounter();
@@ -1842,7 +1847,19 @@ int main(int argc, char* argv[]) {
     }
     cout << "\b " << GREEN << "Ready!" << RESET << endl << endl;
 
-    print_header_box("Matrix Operations Program (21)v2.2.3 - LOG", 80);
+
+    cout << R"(
+______ _                 _                       
+|  ___| |               (_)            V.2.2.4          
+| |_  | |_   _ _ __ ___  _ _ __  _   _ _ __ ___  
+|  _| | | | | | '_ ` _ \| | '_ \| | | | '_ ` _ \ 
+| |   | | |_| | | | | | | | | | | |_| | | | | | |
+\_|   |_|\__,_|_| |_| |_|_|_| |_|\__,_|_| |_| |_|                                                                                                       
+  )" << endl;
+
+
+
+    //print_header_box("Matrix Operations Program (21)v2.2.3 - LOG", 80);
     print_line_in_box(CYAN + " Strassen Multiplication & Parallel Comparison  " + RESET, 80, false, Alignment::Center);
     print_footer_box(80); cout << endl;
 
@@ -1879,4 +1896,4 @@ int main(int argc, char* argv[]) {
     print_footer_box(80); cout << endl;
 
     return 0;
-}
+};
