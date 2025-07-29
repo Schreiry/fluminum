@@ -1,2 +1,0 @@
-Operation,Rows,Cols,TotalElements,MatchCount,MismatchCount,MatchPercentage,DurationSeconds_Chrono,DurationNanoseconds_Chrono,DurationSeconds_QPC,ThreadsUsed,CoresDetected,PeakMemoryMB,ComparisonThreshold,Epsilon
-Comparison,256,256,65536,0,65536,0.00,0.0026539000,2653900,0.0026542000,12,12,8,128,0.0000000000e+00
