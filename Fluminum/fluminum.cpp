@@ -25,6 +25,7 @@
 #include <queue>       // For std::queue (used in ThreadPool)
 #include <mutex>       // For std::mutex, std::unique_lock
 #include <condition_variable> // For std::condition_variable
+#include "PerformanceMonitor.h" // <-- INCLUDE FOR MONITORING resources in the second console window
 
 // Include for SIMD intrinsics (Windows, for Intel/AMD processors supporting AVX)
 #ifdef _MSC_VER
@@ -1762,9 +1763,61 @@ void run_one_operation() {
     }
 }
 
+/**
+ * @brief НОВАЯ ФУНКЦИЯ: Запускает дочерний процесс для мониторинга производительности.
+ */
+void LaunchMonitorProcess() {
+    STARTUPINFOA si;
+    // ИСПРАВЛЕНО: Замена PROCESS_INFORMATIONA на правильный тип PROCESS_INFORMATION.
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    char exePath[MAX_PATH];
+    GetModuleFileNameA(NULL, exePath, MAX_PATH);
+
+    // Добавляем флаг --monitor к командной строке
+    std::string cmdLine = "\"";
+    cmdLine += exePath;
+    cmdLine += "\" --monitor";
+
+    // CreateProcess требует non-const char* для командной строки
+    std::vector<char> cmdLineVec(cmdLine.begin(), cmdLine.end());
+    cmdLineVec.push_back('\0');
+
+    if (!CreateProcessA(
+        NULL,           // Имя исполняемого модуля
+        cmdLineVec.data(),// Командная строка
+        NULL,           // Дескриптор процесса не наследуется
+        NULL,           // Дескриптор потока не наследуется
+        FALSE,          // Установка наследования дескрипторов в FALSE
+        CREATE_NEW_CONSOLE, // Создать новую консоль для процесса
+        NULL,           // Использовать окружение родителя
+        NULL,           // Использовать начальный каталог родителя
+        &si,            // Указатель на структуру STARTUPINFOA
+        &pi)            // Указатель на структуру PROCESS_INFORMATION
+        ) {
+        cerr << RED << "Error: Failed to launch performance monitor (CreateProcess failed with code: " << GetLastError() << ")" << RESET << endl;
+    }
+    else {
+        // Закрываем дескрипторы сразу, так как они нам не нужны
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
+}
+
 
 // --- Main Function with Interactive Loop ---
-int main() {
+int main(int argc, char* argv[]) {
+    // --- ПРОВЕРКА АРГУМЕНТОВ КОМАНДНОЙ СТРОКИ ---
+    if (argc > 1 && std::string(argv[1]) == "--monitor") {
+        return RunPerformanceMonitor();
+    }
+
+    // --- ОСНОВНАЯ ЛОГИКА ПРОГРАММЫ ---
+    SetConsoleTitle(L"Fluminum Matrix Operations");
     SetConsoleOutputCP(CP_UTF8);
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hOut != INVALID_HANDLE_VALUE) {
@@ -1774,6 +1827,9 @@ int main() {
             SetConsoleMode(hOut, dwMode);
         }
     }
+
+    // --- Запуск дочернего процесса мониторинга ---
+    LaunchMonitorProcess();
 
     initializePerformanceCounter();
 
