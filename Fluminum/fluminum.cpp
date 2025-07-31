@@ -1848,20 +1848,35 @@ int main(int argc, char* argv[]) {
     cout << "\b " << GREEN << "Ready!" << RESET << endl << endl;
 
 
-    cout << R"(
-______ _                 _                       
-|  ___| |               (_)            V.2.2.4          
-| |_  | |_   _ _ __ ___  _ _ __  _   _ _ __ ___  
-|  _| | | | | | '_ ` _ \| | '_ \| | | | '_ ` _ \ 
-| |   | | |_| | | | | | | | | | | |_| | | | | | |
-\_|   |_|\__,_|_| |_| |_|_|_| |_|\__,_|_| |_| |_|                                                                                                       
+    cout << R"(                                                                                                                   
+                                   █                  
+                         ██    ██                      
+                     █     █                           
+                    █       ██                         
+                      ███        ███                   
+                          ███         ██               
+                             ██         ██             
+                              █         ██             
+                           ██           ██             
+                       ███           █ ██              
+                  ███              █ ██                
+              ██                ████                   
+            █               █ ███                      
+           █               █ █                         
+                           █                           
+                                                       
+                                                       
+   ████ █    █   █  █    █  █ ██   █ █   █  █    █     
+   █    █    █   █  ██  ██  █ ███  █ █   █  ██  ██     
+   █    █    ██  █  █ ██ █  █ ██ ███ █   █  █ ██ █     
+   █    ████   ██   █    █  █  █   █   ██   █    █                                                                                                                                                                                                                                                                                                                                                                                         
   )" << endl;
 
 
 
     //print_header_box("Matrix Operations Program (21)v2.2.3 - LOG", 80);
-    print_line_in_box(CYAN + " Strassen Multiplication & Parallel Comparison  " + RESET, 80, false, Alignment::Center);
-    print_footer_box(80); cout << endl;
+    //print_line_in_box(CYAN + " Strassen Multiplication & Parallel Comparison  " + RESET, 80, false, Alignment::Center);
+    //print_footer_box(80); cout << endl;
 
     bool continue_running = true;
     while (continue_running) {

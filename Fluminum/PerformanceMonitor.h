@@ -1,28 +1,73 @@
 #pragma once
 
-// --- Includes for Performance Monitor ---
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <pdh.h>
 
-// Structure to hold all performance data
-struct PerformanceData {
-    std::string cpuName;
-    int coreCount;
-    double totalCpuUsage;
-    std::vector<double> coreUsage;
-    unsigned long long totalRamMB;
-    unsigned long long usedRamMB;
-    double ramUsagePercentage;
+// --- Структуры для хранения данных ---
+
+struct CacheInfo {
+    DWORD level;
+    DWORD size;
+    DWORD lineSize;
+    DWORD associativity;
 };
 
-// --- Function Declarations for the Performance Monitor ---
+struct StaticSystemInfo {
+    std::string cpuName;
+    int logicalCoreCount;
+    std::vector<CacheInfo> caches;
+};
 
-/**
- * @brief Главная функция для окна мониторинга производительности.
- *
- * Запускает цикл, который непрерывно собирает и отображает системные метрики.
- * Эта функция предназначена для запуска в отдельном процессе.
- * @return Код выхода (0 при успехе).
- */
-int RunPerformanceMonitor();
+struct PerformanceData {
+    double totalCpuUsage = 0.0;
+    std::vector<double> coreUsage;
+    unsigned long long totalRamMB = 0;
+    unsigned long long availableRamMB = 0;
+    double pageFaultsPerSec = 0.0;
+};
+
+// --- Основной класс монитора производительности ---
+
+class PerformanceMonitor {
+public:
+    PerformanceMonitor();
+    ~PerformanceMonitor();
+
+    PerformanceMonitor(const PerformanceMonitor&) = delete;
+    PerformanceMonitor& operator=(const PerformanceMonitor&) = delete;
+
+    void Run();
+
+private:
+    void InitConsole();
+    void InitPdhQueries();
+    void QueryStaticInfo();
+
+    void CollectDynamicData();
+    bool RestartPdhQuery();
+
+    void Render();
+    void PrintToBuffer(int x, int y, const std::string& text);
+    // ИЗМЕНЕНО: Упрощена сигнатура функции PrintBar
+    void PrintBar(int x, int y, double percentage, const std::string& label);
+
+    HANDLE consoleHandles_[2];
+    int activeBufferIndex_;
+    CHAR_INFO* charBuffer_;
+    COORD bufferSize_;
+    COORD bufferCoord_;
+    SMALL_RECT consoleWriteArea_;
+
+    StaticSystemInfo staticInfo_;
+    PerformanceData perfData_;
+
+    PDH_HQUERY queryHandle_;
+    PDH_HCOUNTER totalCpuCounter_;
+    std::vector<PDH_HCOUNTER> coreCounters_;
+    PDH_HCOUNTER availableMemoryCounter_;
+    PDH_HCOUNTER pageFaultsCounter_;
+};
+
+int RunPerformanceMonitorEntry();

@@ -1,2 +1,1 @@
-﻿  fluminum.cpp
-  fluminum.vcxproj -> C:\Users\woter\OneDrive\Рабочий стол\fluminum-main\Fluminum\x64\Debug\fluminum.exe
+﻿cl : командная строка  error D8016: несовместимые параметры командной строки "/utf-8" и "/source-charset:utf-8"
