@@ -364,7 +364,7 @@ The program will greet you with an interactive menu:
 
 - [x] less CPU heating ;
 
-- [ ] coefficient system
+- [ ] coefficient system - (In active development)
 
 - [X] student conference ;
 
