@@ -364,7 +364,7 @@ The program will greet you with an interactive menu:
 
 - [x] less CPU heating ;
 
-- [ ] coefficient system - (In active development)
+- [ ] PCPA [Preliminary computer performance assessment] - (In active development) ; 
 
 - [X] student conference ;
 
@@ -373,19 +373,27 @@ The program will greet you with an interactive menu:
 
 ### Version 2.5 - 2.9 (Q3 2025)
 
-- [ ] Cross-platform support (Linux/macOS) ;
+- [ ] Coppersmith–Winograd Algorithm ;
 
-- [ ] Coppersmith–Winograd Algorithm
+- [X] Perfomance Monitoring ;
 
-- [ ] Tiling (Block Matrix Multiplication)
+- [ ] Tiling (Block Matrix Multiplication) ; 
+
+- [ ] Modules + config ; 
  
 - [ ] AVX-512 support ; 
  
-- [ ] Better UI ; 
+- [ ] Better UI ;
+
+- [ ] CSR/CSC ; 
+
+- [ ] Numerical methods (LU, CG, QR)
+
+- [ ] Profiling ; 
  
 - [ ] Profiling and testing ; 
  
-- [ ] Dynamic threshold optimization 
+- [ ] Dynamic threshold optimization ;
 
 ### Version 3.0 (Q4 2025)
 
@@ -395,11 +403,15 @@ The program will greet you with an interactive menu:
  
 - [ ] Python bindings ; 
  
-- [ ] Web assembly port ; 
+- [ ] Web assembly port ;
+
+- [ ] Cross-platform support (Linux/macOS) ; 
  
 - [ ] GPU acceleration (CUDA/OpenCL) ; 
  
-- [ ] Quantum-resistant algorithms
+- [ ] Quantum-resistant algorithms ; 
+
+- [ ] Arbitrary Precision (Boost.Multiprecision) support for financial and scientific calculations . 
 
 
 
@@ -435,6 +447,8 @@ special thanks :
 - Andrey Greve ;
 - Alexander Greve ; 
 - Tsotne Daraseli ;
+- Tamar Tinikashvili ;
+- Mirian Putkaradze .
 
 
 ![sponsortocat](https://github.com/user-attachments/assets/967e22ed-47b8-4387-8bdf-9b652ec08b21)
