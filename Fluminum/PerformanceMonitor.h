@@ -5,20 +5,7 @@
 #include <vector>
 #include <pdh.h>
 
-// --- Структуры для хранения данных ---
-
-struct CacheInfo {
-    DWORD level;
-    DWORD size;
-    DWORD lineSize;
-    DWORD associativity;
-};
-
-struct StaticSystemInfo {
-    std::string cpuName;
-    int logicalCoreCount;
-    std::vector<CacheInfo> caches;
-};
+// --- Структуры для динамических данных ---
 
 struct PerformanceData {
     double totalCpuUsage = 0.0;
@@ -41,18 +28,18 @@ public:
     void Run();
 
 private:
+    // --- Методы инициализации и сбора данных ---
     void InitConsole();
-    void InitPdhQueries();
     void QueryStaticInfo();
-
+    void InitPdhQueries();
     void CollectDynamicData();
-    bool RestartPdhQuery();
 
+    // --- Методы рендеринга ---
     void Render();
     void PrintToBuffer(int x, int y, const std::string& text);
-    // ИЗМЕНЕНО: Упрощена сигнатура функции PrintBar
     void PrintBar(int x, int y, double percentage, const std::string& label);
 
+    // --- Дескрипторы и буферы консоли ---
     HANDLE consoleHandles_[2];
     int activeBufferIndex_;
     CHAR_INFO* charBuffer_;
@@ -60,9 +47,11 @@ private:
     COORD bufferCoord_;
     SMALL_RECT consoleWriteArea_;
 
-    StaticSystemInfo staticInfo_;
+    // --- Хранилища данных ---
     PerformanceData perfData_;
+    int logicalCoreCount_ = 0;
 
+    // --- Дескрипторы PDH для динамических данных ---
     PDH_HQUERY queryHandle_;
     PDH_HCOUNTER totalCpuCounter_;
     std::vector<PDH_HCOUNTER> coreCounters_;
