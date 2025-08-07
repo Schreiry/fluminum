@@ -373,7 +373,7 @@ The program will greet you with an interactive menu:
 
 ### Version 2.5 - 2.9 (Q3 2025)
 
-- [ ] Coppersmith–Winograd Algorithm ;
+- [ ] Coppersmith–Winograd Algorithm - (Currently cancelled due to inefficiency and high resource intensity) ;  
 
 - [X] Perfomance Monitoring ;
 
