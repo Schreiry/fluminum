@@ -1,4 +1,4 @@
-# Fluminum (v2.2): The Apex of High-Performance Matrix Operations in C++ 🚀 
+# Fluminum (v2.3.1): The Apex of High-Performance Matrix Operations in C++ 🚀 
    ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
  
 Welcome to **Fluminum**, an interactive C++ powerhouse engineered to shatter the boundaries of matrix computation speed. This project isn't just another implementation; it's a testament to the synergistic power of **Strassen's algorithm**, advanced **multi-threading with `std::async`**, low-level **SIMD (AVX/SSE2) optimizations**, and intelligent **system-aware resource management**.
@@ -377,9 +377,9 @@ The program will greet you with an interactive menu:
 
 - [X] Perfomance Monitoring ;
 
-- [ ] Tiling (Block Matrix Multiplication) ; 
+- [X] Tiling (Block Matrix Multiplication) ; 
 
-- [ ] Modules + config ; 
+- [X] Modules + config ; 
  
 - [ ] AVX-512 support ; 
  
