@@ -108,36 +108,42 @@ Fluminum achieves its performance through a multi-pronged optimization strategy:
 
 ```mermaid
 graph TD;
-    Fluminum-->UI;
-    Fluminum-->ProgressTracking["Progress Tracking"];
-    Fluminum-->Logging;
-    Fluminum-->ASCITimeline["ASCII timeline of time"];
-    UI-->SA["S.A"];
-    ProgressTracking-->SA;
-    Logging-->SA;
-    ASCITimeline-->SA;
-    SA-->CombineResults["Combine Results"];
-    SA-->ThreadsParallel["Threads parallel"];
-    SA-->DivideMatrix["Divide Matrix"];
-    CombineResults-->SIMDAVXOptimized["SIMD&AVX Optimized"];
-    SIMDAVXOptimized-->SystemIntegration["System Integration"];
-    SystemIntegration-->MemoryManagement["Memory Management"];
-    SystemIntegration-->HardwareDetection["Hardware Detection"];
-    SystemIntegration-->ErrorHandling["Error Handling"];
+    FluminumProject["FluminumProject" core]:::mainNode;
+    Parser["Argument parser"]:::processNode;
+    Tiling["Tiling (block splitting)"]:::processNode;
+    ResourceMonitor["Resource Monitoring"]:::processNode;
+    Logging["Logging"]:::processNode;
+    ASCITimeline["ASCII Timeline"]:::processNode;
+    SA["System Algorithm (Core)"]:::coreNode;
 
-    %% Стили для узлов
+    FluminumProject --> Parser;
+    FluminumProject --> Tiling;
+    FluminumProject --> ResourceMonitor;
+    FluminumProject --> Logging;
+    FluminumProject --> ASCITimeline;
+
+    Parser --> SA;
+    Tiling --> SA;
+    ResourceMonitor --> SA;
+    Logging --> SA;
+    ASCITimeline --> SA;
+
+    SA --> DivideMatrix["Matrix partitioning"]:::optimNode;
+    SA --> ThreadsParallel["Thread processing"]:::optimNode;
+    SA --> CombineResults["Combining results"]:::optimNode;
+
+    CombineResults --> SIMDAVX["SIMD & AVX optimization"]:::optimNode;
+    SIMDAVX --> SystemIntegration["Integration with the system"]:::systemNode;
+
+    SystemIntegration --> MemoryMgmt["Memory management"]:::systemNode;
+    SystemIntegration --> HardwareDetect["Equipment detection"]:::systemNode;
+    SystemIntegration --> ErrorHandling["Error handling"]:::systemNode;
+
     classDef mainNode fill:#ff6b6b,stroke:#d63031,stroke-width:3px,color:#fff;
     classDef processNode fill:#4ecdc4,stroke:#00b894,stroke-width:2px,color:#fff;
     classDef coreNode fill:#ffe66d,stroke:#fdcb6e,stroke-width:3px,color:#2d3436;
     classDef optimNode fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px,color:#fff;
     classDef systemNode fill:#fd79a8,stroke:#e84393,stroke-width:2px,color:#fff;
-
-    %% Применение стилей
-    class Fluminum mainNode;
-    class UI,ProgressTracking,Logging,ASCITimeline processNode;
-    class SA coreNode;
-    class CombineResults,ThreadsParallel,DivideMatrix,SIMDAVXOptimized optimNode;
-    class SystemIntegration,MemoryManagement,HardwareDetection,ErrorHandling systemNode;
 ```
 
 
