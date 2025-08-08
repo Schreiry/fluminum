@@ -1,4 +1,3 @@
-
 #define NOMINMAX
 #include "Matrix.h"
 #include "System.h" // For getSystemMemoryInfo in nextPowerOf2
@@ -106,65 +105,56 @@ Matrix Matrix::multiply_naive(const Matrix& other) const {
 
     Matrix result(rows_, other.cols_);
     int M = rows_; int N = cols_; int P = other.cols_;
-    const double* a_ptr = data_.data();
-    const double* b_ptr = other.data_.data();
-    double* c_ptr = result.data_.data();
 
-#ifdef HAS_AVX
-    if (has_avx_global && N > 0 && P >= SIMD_VECTOR_SIZE_DOUBLE) {
-        int P_aligned = P - (P % SIMD_VECTOR_SIZE_DOUBLE);
-        for (int i = 0; i < M; ++i) {
-            for (int j = 0; j < P_aligned; j += SIMD_VECTOR_SIZE_DOUBLE) {
-                __m256d c_vec = _mm256_setzero_pd();
-                for (int k = 0; k < N; ++k) {
-                    __m256d a_scalar = _mm256_broadcast_sd(a_ptr + static_cast<size_t>(i) * N + k);
-                    __m256d b_vec = _mm256_loadu_pd(b_ptr + static_cast<size_t>(k) * P + j);
-                    c_vec = _mm256_add_pd(c_vec, _mm256_mul_pd(a_scalar, b_vec));
-                }
-                _mm256_storeu_pd(c_ptr + static_cast<size_t>(i) * P + j, c_vec);
-            }
-            for (int j = P_aligned; j < P; ++j) {
-                double sum = 0.0;
-                for (int k = 0; k < N; ++k) sum += a_ptr[static_cast<size_t>(i) * N + k] * b_ptr[static_cast<size_t>(k) * P + j];
-                c_ptr[static_cast<size_t>(i) * P + j] = sum;
-            }
-        }
-        return result;
-    }
-#endif
-#ifdef HAS_SSE2
-    if (has_sse2_global && N > 0 && P >= SIMD_VECTOR_SIZE_DOUBLE && !has_avx_global) {
-        int P_aligned = P - (P % SIMD_VECTOR_SIZE_DOUBLE);
-        for (int i = 0; i < M; ++i) {
-            for (int j = 0; j < P_aligned; j += SIMD_VECTOR_SIZE_DOUBLE) {
-                __m128d c_vec = _mm_setzero_pd();
-                for (int k = 0; k < N; ++k) {
-                    __m128d a_scalar = _mm_load_sd(a_ptr + static_cast<size_t>(i) * N + k);
-                    a_scalar = _mm_unpacklo_pd(a_scalar, a_scalar);
-                    __m128d b_vec = _mm_loadu_pd(b_ptr + static_cast<size_t>(k) * P + j);
-                    c_vec = _mm_add_pd(c_vec, _mm_mul_pd(a_scalar, b_vec));
-                }
-                _mm_storeu_pd(c_ptr + static_cast<size_t>(i) * P + j, c_vec);
-            }
-            for (int j = P_aligned; j < P; ++j) {
-                double sum = 0.0;
-                for (int k = 0; k < N; ++k) sum += a_ptr[static_cast<size_t>(i) * N + k] * b_ptr[static_cast<size_t>(k) * P + j];
-                c_ptr[static_cast<size_t>(i) * P + j] = sum;
-            }
-        }
-        return result;
-    }
-#endif
     // Fallback scalar implementation
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < P; ++j) {
             double sum = 0.0;
-            for (int k = 0; k < N; ++k) sum += (*this)(i, k) * other(k, j);
+            for (int k = 0; k < N; ++k) {
+                sum += (*this)(i, k) * other(k, j);
+            }
             result(i, j) = sum;
         }
     }
     return result;
 }
+
+
+// --- NEW: Tiled (Cache-Blocked) Multiplication Implementation ---
+Matrix Matrix::multiply_tiled(const Matrix& other, int blockSize) const {
+    if (cols_ != other.rows_) throw std::invalid_argument("Matrix dimensions incompatible for multiplication (A.cols != B.rows).");
+    if (rows_ == 0 || cols_ == 0 || other.cols_ == 0) return Matrix(rows_, other.cols_);
+    if (blockSize <= 0) throw std::invalid_argument("Block size must be positive.");
+
+    Matrix result(rows_, other.cols_);
+    int M = rows_;
+    int N = cols_;
+    int P = other.cols_;
+
+    // Tiling loops (6 nested loops in total)
+    // We iterate over blocks of the matrices.
+    for (int i_block = 0; i_block < M; i_block += blockSize) {
+        for (int j_block = 0; j_block < P; j_block += blockSize) {
+            for (int k_block = 0; k_block < N; k_block += blockSize) {
+
+                // Inner loops operate on one tile at a time.
+                // These tiles are small enough to fit in the CPU cache.
+                for (int i = i_block; i < std::min(i_block + blockSize, M); ++i) {
+                    for (int j = j_block; j < std::min(j_block + blockSize, P); ++j) {
+                        double sum = result(i, j); // Load previous sum if k_block > 0
+                        for (int k = k_block; k < std::min(k_block + blockSize, N); ++k) {
+                            sum += (*this)(i, k) * other(k, j);
+                        }
+                        result(i, j) = sum;
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
 
 long long Matrix::compare_naive(const Matrix& other, double epsilon) const {
     if (rows_ != other.rows_ || cols_ != other.cols_) {

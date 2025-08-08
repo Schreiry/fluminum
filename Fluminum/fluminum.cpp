@@ -42,6 +42,10 @@ int main(int argc, char* argv[]) {
     LaunchMonitorProcess();
     initializePerformanceCounter();
 
+    // --- NEW: Run the tile size auto-tuner ---
+    autoTuneTileSize();
+
+
     ArgParser parser(argc, argv);
 
     // 3. Decide execution mode

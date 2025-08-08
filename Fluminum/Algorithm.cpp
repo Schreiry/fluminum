@@ -1,6 +1,5 @@
-
 #define NOMINMAX
-#include "Algorithm.h"
+#include "Algorithms.h"
 #include "Matrix.h"
 #include "System.h"
 #include "IO.h" // For progress bar
@@ -9,7 +8,7 @@
 MultiplicationResult::MultiplicationResult() :
     resultMatrix(0, 0), durationSeconds_chrono(0.0), durationNanoseconds_chrono(0LL),
     durationSeconds_qpc(0.0), threadsUsed(0), coresDetected(0),
-    memoryInfo({ 0 }), strassenThreshold(0),
+    memoryInfo({ 0 }), algorithm_type("Unknown"), strassenThreshold(0),
     originalRowsA(0), originalColsA(0), originalRowsB(0), originalColsB(0) {
 }
 
@@ -63,7 +62,6 @@ auto ThreadPool::enqueue(F&& f, Args&&... args) -> std::future<std::invoke_resul
     condition.notify_one();
     return res;
 }
-// Explicit template instantiation if needed, or keep in header for templates.
 
 // --- Progress Bar Implementation ---
 long long calculate_total_tasks(int n, int threshold) {
@@ -99,15 +97,22 @@ void display_progress(std::atomic<int>& counter, long long total, std::atomic<bo
 
 
 // --- Strassen Multiplication ---
-Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int threshold, int current_depth, int max_depth_async, std::atomic<int>& progress_counter);
+Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int threshold,
+    bool use_tiling, int tile_size,
+    int current_depth, int max_depth_async, std::atomic<int>& progress_counter);
 
-MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold, unsigned int num_threads_request) {
+MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold,
+    bool use_tiling_for_base, int tile_size_for_base,
+    unsigned int num_threads_request) {
     MultiplicationResult result_obj;
     result_obj.originalRowsA = A_orig.rows();
     result_obj.originalColsA = A_orig.cols();
     result_obj.originalRowsB = B_orig.rows();
     result_obj.originalColsB = B_orig.cols();
     result_obj.strassenThreshold = threshold;
+    result_obj.tiling_enabled = use_tiling_for_base;
+    result_obj.tile_size = tile_size_for_base;
+    result_obj.algorithm_type = "Strassen";
 
     if (A_orig.cols() != B_orig.rows()) throw std::invalid_argument("Matrix dimensions incompatible (A.cols != B.rows).");
     if (A_orig.isEmpty() || B_orig.isEmpty()) {
@@ -148,16 +153,24 @@ MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix
 
     if (result_obj.strassen_applied_at_top_level) {
         total_tasks = calculate_total_tasks(padded_size, threshold);
-        print_line_in_box(CYAN + " Starting parallel Strassen..." + RESET, 80, false);
+        string msg = " Starting parallel Strassen...";
+        if (use_tiling_for_base) msg += " (Tiled Base)";
+        print_line_in_box(CYAN + msg + RESET, 80, false);
         progress_thread = std::thread(display_progress, std::ref(progress_counter), total_tasks, std::ref(multiplication_done));
 
         ThreadPool pool(result_obj.threadsUsed);
-        Cpad = strassen_recursive_worker(pool, Apad, Bpad, threshold, 0, max_depth_async, std::ref(progress_counter));
+        Cpad = strassen_recursive_worker(pool, Apad, Bpad, threshold, use_tiling_for_base, tile_size_for_base, 0, max_depth_async, std::ref(progress_counter));
 
     }
     else {
-        print_line_in_box(CYAN + " Using Naive multiplication (Size <= Threshold or Threshold=0)..." + RESET, 80, false);
-        Cpad = Apad.multiply_naive(Bpad);
+        if (use_tiling_for_base) {
+            print_line_in_box(CYAN + " Using Tiled multiplication (Size <= Threshold or Threshold=0)..." + RESET, 80, false);
+            Cpad = Apad.multiply_tiled(Bpad, tile_size_for_base);
+        }
+        else {
+            print_line_in_box(CYAN + " Using Naive multiplication (Size <= Threshold or Threshold=0)..." + RESET, 80, false);
+            Cpad = Apad.multiply_naive(Bpad);
+        }
     }
 
     if (progress_thread.joinable()) {
@@ -182,10 +195,17 @@ MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix
     return result_obj;
 }
 
-Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int threshold, int current_depth, int max_depth_async, std::atomic<int>& progress_counter) {
+Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int threshold,
+    bool use_tiling, int tile_size,
+    int current_depth, int max_depth_async, std::atomic<int>& progress_counter) {
     if (A.rows() <= threshold) {
         progress_counter.fetch_add(1, std::memory_order_relaxed);
-        return A.multiply_naive(B);
+        if (use_tiling) {
+            return A.multiply_tiled(B, tile_size);
+        }
+        else {
+            return A.multiply_naive(B);
+        }
     }
 
     Matrix A11, A12, A21, A22, B11, B12, B21, B22;
@@ -199,13 +219,13 @@ Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int thres
     bool launch_async_here = (current_depth < max_depth_async);
 
     if (launch_async_here) {
-        auto fP1 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S5, S6, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP2 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S3, B11, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP3 = pool.enqueue(strassen_recursive_worker, std::ref(pool), A11, S1, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP4 = pool.enqueue(strassen_recursive_worker, std::ref(pool), A22, S4, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP5 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S2, B22, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP6 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S9, S10, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
-        auto fP7 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S7, S8, threshold, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP1 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S5, S6, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP2 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S3, B11, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP3 = pool.enqueue(strassen_recursive_worker, std::ref(pool), A11, S1, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP4 = pool.enqueue(strassen_recursive_worker, std::ref(pool), A22, S4, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP5 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S2, B22, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP6 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S9, S10, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
+        auto fP7 = pool.enqueue(strassen_recursive_worker, std::ref(pool), S7, S8, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, std::ref(progress_counter));
 
         Matrix P1 = fP1.get(); Matrix P2 = fP2.get(); Matrix P3 = fP3.get(); Matrix P4 = fP4.get();
         Matrix P5 = fP5.get(); Matrix P6 = fP6.get(); Matrix P7 = fP7.get();
@@ -217,19 +237,82 @@ Matrix strassen_recursive_worker(ThreadPool& pool, Matrix A, Matrix B, int thres
 
     }
     else {
-        Matrix P1 = strassen_recursive_worker(pool, S5, S6, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P2 = strassen_recursive_worker(pool, S3, B11, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P3 = strassen_recursive_worker(pool, A11, S1, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P4 = strassen_recursive_worker(pool, A22, S4, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P5 = strassen_recursive_worker(pool, S2, B22, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P6 = strassen_recursive_worker(pool, S9, S10, threshold, current_depth + 1, max_depth_async, progress_counter);
-        Matrix P7 = strassen_recursive_worker(pool, S7, S8, threshold, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P1 = strassen_recursive_worker(pool, S5, S6, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P2 = strassen_recursive_worker(pool, S3, B11, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P3 = strassen_recursive_worker(pool, A11, S1, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P4 = strassen_recursive_worker(pool, A22, S4, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P5 = strassen_recursive_worker(pool, S2, B22, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P6 = strassen_recursive_worker(pool, S9, S10, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
+        Matrix P7 = strassen_recursive_worker(pool, S7, S8, threshold, use_tiling, tile_size, current_depth + 1, max_depth_async, progress_counter);
 
         Matrix C11 = P1 + P4 - P5 + P7; Matrix C12 = P3 + P5;
         Matrix C21 = P2 + P4;           Matrix C22 = P1 - P2 + P3 + P6;
         progress_counter.fetch_add(1, std::memory_order_relaxed);
         return Matrix::combine(C11, C12, C21, C22);
     }
+}
+
+
+// --- NEW: Tiled Parallel Multiplication ---
+MultiplicationResult multiplyTiledParallel(const Matrix& A, const Matrix& B, int tileSize, unsigned int num_threads_request) {
+    MultiplicationResult result_obj;
+    result_obj.originalRowsA = A.rows();
+    result_obj.originalColsA = A.cols();
+    result_obj.originalRowsB = B.rows();
+    result_obj.originalColsB = B.cols();
+    result_obj.tiling_enabled = true;
+    result_obj.tile_size = tileSize;
+    result_obj.algorithm_type = "Tiled Parallel";
+
+    if (A.cols() != B.rows()) throw std::invalid_argument("Matrix dimensions incompatible (A.cols != B.rows).");
+
+    unsigned int hardware_cores = getCpuCoreCount();
+    result_obj.coresDetected = hardware_cores;
+    result_obj.threadsUsed = (num_threads_request == 0) ? hardware_cores : std::min(num_threads_request, hardware_cores);
+    if (result_obj.threadsUsed == 0) result_obj.threadsUsed = 1;
+
+    auto total_op_start_chrono = std::chrono::high_resolution_clock::now();
+
+    Matrix C(A.rows(), B.cols());
+    ThreadPool pool(result_obj.threadsUsed);
+    std::vector<std::future<void>> futures;
+
+    int M = A.rows();
+
+    // We parallelize the outermost loop (the rows of the result matrix C)
+    for (int i_block = 0; i_block < M; i_block += tileSize) {
+        futures.emplace_back(pool.enqueue([&A, &B, &C, i_block, tileSize] {
+            int M = A.rows();
+            int N = A.cols();
+            int P = B.cols();
+
+            // Each thread computes a horizontal "stripe" of the result matrix C.
+            // The loops are j_block, k_block, i, j, k to compute the assigned stripe.
+            for (int j_block = 0; j_block < P; j_block += tileSize) {
+                for (int k_block = 0; k_block < N; k_block += tileSize) {
+                    for (int i = i_block; i < std::min(i_block + tileSize, M); ++i) {
+                        for (int j = j_block; j < std::min(j_block + tileSize, P); ++j) {
+                            double sum = C(i, j);
+                            for (int k = k_block; k < std::min(k_block + tileSize, N); ++k) {
+                                sum += A(i, k) * B(k, j);
+                            }
+                            C(i, j) = sum;
+                        }
+                    }
+                }
+            }
+            }));
+    }
+
+    for (auto& f : futures) {
+        f.get(); // Wait for all threads to complete
+    }
+
+    auto total_op_end_chrono = std::chrono::high_resolution_clock::now();
+    result_obj.durationSeconds_chrono = std::chrono::duration<double>(total_op_end_chrono - total_op_start_chrono).count();
+    result_obj.resultMatrix = C;
+    result_obj.memoryInfo = getProcessMemoryUsage();
+    return result_obj;
 }
 
 

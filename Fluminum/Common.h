@@ -96,16 +96,24 @@ struct MultiplicationResult {
     unsigned int threadsUsed;
     unsigned int coresDetected;
     ProcessMemoryInfo memoryInfo;
+    string algorithm_type; // e.g., "Strassen", "Tiled Parallel", "Naive"
     int strassenThreshold;
     int originalRowsA, originalColsA, originalRowsB, originalColsB;
+
+    // --- NEW: Tiling Information ---
+    bool tiling_enabled = false;
+    int tile_size = 0;
+
     double padding_duration_sec = 0.0;
     double unpadding_duration_sec = 0.0;
+
+    // Strassen-specific detailed timings
+    bool strassen_applied_at_top_level = false;
     double first_level_split_sec = 0.0;
     double first_level_S_calc_sec = 0.0;
     double first_level_P_tasks_wall_sec = 0.0;
     double first_level_C_quad_calc_sec = 0.0;
     double first_level_final_combine_sec = 0.0;
-    bool strassen_applied_at_top_level = false;
 
     MultiplicationResult(); // Constructor defined in Algorithms.cpp
 };

@@ -19,5 +19,16 @@ private:
 };
 
 // --- Core Algorithms ---
-MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold, unsigned int num_threads_request = 0);
-ComparisonResult compareMatricesParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold, double epsilon, unsigned int num_threads_request = 0);
+
+// Strassen's Algorithm, now with a flag to enable tiling for its base cases.
+MultiplicationResult multiplyStrassenParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold,
+    bool use_tiling_for_base, int tile_size_for_base,
+    unsigned int num_threads_request = 0);
+
+// NEW: A standalone, fully parallelized tiled multiplication algorithm.
+MultiplicationResult multiplyTiledParallel(const Matrix& A, const Matrix& B, int tileSize,
+    unsigned int num_threads_request);
+
+
+ComparisonResult compareMatricesParallel(const Matrix& A_orig, const Matrix& B_orig, int threshold, double epsilon,
+    unsigned int num_threads_request = 0);

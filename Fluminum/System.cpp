@@ -1,10 +1,12 @@
 #include "System.h"
 #include "PerformanceMonitor.h" // For RunPerformanceMonitorEntry
+#include "Matrix.h" // Needed for auto-tuning
 
 // --- Global Variables ---
 LARGE_INTEGER g_performanceFrequency = { 0 };
 bool has_avx_global = false;
 bool has_sse2_global = false;
+int G_OPTIMAL_TILE_SIZE = 32; // Default, will be overwritten by auto-tuner
 
 // --- System Information ---
 SystemMemoryInfo getSystemMemoryInfo() {
@@ -74,6 +76,45 @@ void check_simd_support() {
     has_sse2_global = false;
 #endif
 }
+
+
+// --- NEW: Tiling Auto-Tuner Implementation ---
+void autoTuneTileSize() {
+    cout << CYAN << "Performing one-time hardware tuning for optimal tile size..." << RESET << endl;
+
+    const int test_dim = 256; // Small enough to be fast, large enough to be meaningful
+    const int num_runs = 3; // Number of runs to average for each tile size
+    Matrix A = Matrix::generateRandom(test_dim, test_dim);
+    Matrix B = Matrix::generateRandom(test_dim, test_dim);
+
+    std::vector<int> tile_sizes_to_test = { 16, 24, 32, 48, 64, 96, 128 };
+    double best_time = std::numeric_limits<double>::max();
+    int best_tile_size = 32;
+
+    cout << "Benchmarking tile sizes: ";
+    for (int size : tile_sizes_to_test) {
+        cout << size << "... " << std::flush;
+        if (size > test_dim) continue;
+
+        double total_duration = 0;
+        for (int i = 0; i < num_runs; ++i) {
+            auto start = std::chrono::high_resolution_clock::now();
+            A.multiply_tiled(B, size); // Use the actual tiled method
+            auto end = std::chrono::high_resolution_clock::now();
+            total_duration += std::chrono::duration<double>(end - start).count();
+        }
+        double avg_time = total_duration / num_runs;
+
+        if (avg_time < best_time) {
+            best_time = avg_time;
+            best_tile_size = size;
+        }
+    }
+
+    G_OPTIMAL_TILE_SIZE = best_tile_size;
+    cout << endl << GREEN << "Auto-tuning complete. Optimal tile size for this system: " << G_OPTIMAL_TILE_SIZE << "x" << G_OPTIMAL_TILE_SIZE << RESET << endl << endl;
+}
+
 
 // --- Memory Estimation ---
 unsigned long long estimateStrassenMemoryMB(int n_padded) {

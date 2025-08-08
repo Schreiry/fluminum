@@ -26,6 +26,10 @@ public:
 
     // --- Core Algorithms ---
     Matrix multiply_naive(const Matrix& other) const;
+
+    // --- NEW: Tiled multiplication method ---
+    Matrix multiply_tiled(const Matrix& other, int blockSize) const;
+
     long long compare_naive(const Matrix& other, double epsilon = 0.0) const;
 
     // --- Static Factory & Utility Methods ---
