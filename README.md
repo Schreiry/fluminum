@@ -452,7 +452,7 @@ special thanks :
 - [@Alexander Tsurtsumia](https://github.com/AlexanderTsurtsumia) ;
 - Andrey Greve ;
 - Alexander Greve ; 
-- Tsotne Daraseli ;
+- Tsotne Daraselia ;
 - Tamar Tinikashvili ;
 - Mirian Putkaradze .
 
