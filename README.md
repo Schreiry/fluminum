@@ -203,24 +203,140 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 
 ## General information for reference :
 
-| Процессор| thread | OM_Time (Avg) | SA_Time (s) | OM/SA (x) | SA Acceleration (x) |
-| :--- | :--- | ---: | ---: | ---: | ---: |
-| **Intel Core i9-14900** | 1 | 202.713 | 1.76698 | **~114,7X** | 1.0x |
-| | **32** | 202.713 | **0.799268** | **~253,6X** | **~24.5x** |
-| **Intel Core i9-13900K** | 1 | 171.801 | 1.8108 | **~94.8x** | 1.0x |
-| | **32** | 171.80 | **0.3110** | **~552.4x** | **~24.5x** |
-| **Intel Core i5-12400** | 1 | 217.70 | 9.10901 | **~25.5x** | 1.0x |
-| | **12** | 217.70 | **1.83452** | **~118.7x** | **~6.5x** |
-| **Intel Core i5-10400F** | 1 | 286.90 | 10.84313 | **~22.3x** | 1.0x |
-| | **12** | 286.90 | **2.13990** | **~134.1x** | **~6.0x** |
-| **Intel Xeon X5680** | 1 | 493.59 | 32.20330 | **~15.3x** | 1.0x |
-| | **12** | 493.59 | **28.28180** | **~17.5x** | **~1.1x** |
-| **Intel Core i7-8600U** | 1 | 725.75 | 15.44390 | **~47.0x** | 1.0x |
-| | **8** | 725.75 | **4.36330** | **~166.3x** | **~3.5x** |
-| **AMD Ryzen 5 7535HS** | 1 | 325.49 | 13.15830 | **~24.7x** | 1.0x |
-| | **12** | 325.49 | **2.31333** | **~140.7x** | **~5.7x** |
-| **AMD Ryzen 5 7530U** | 1 | 254.12 | 12.99914 | **~19.5x** | 1.0x |
-| | **12** | 254.12 | **2.50237** | **~101.6x** | **~5.2x** |
+<table>
+  <thead>
+    <tr>
+      <th align="center">Processor</th>
+      <th align="left">thread</th>
+      <th align="right">OM_Time (Avg)</th>
+      <th align="right">SA_Time (s)</th>
+      <th align="right">OM/SA (x)</th>
+      <th align="right">SA Acceleration (x)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Core i9-14900</strong></td>
+      <td align="left">1</td>
+      <td align="right">202.713</td>
+      <td align="right">1.76698</td>
+      <td align="right"><strong>~114,7X</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>32</strong></td>
+      <td align="right">202.713</td>
+      <td align="right"><strong>0.799268</strong></td>
+      <td align="right"><strong>~253,6X</strong></td>
+      <td align="right"><strong>~24.5x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Core i9-13900K</strong></td>
+      <td align="left">1</td>
+      <td align="right">171.801</td>
+      <td align="right">1.8108</td>
+      <td align="right"><strong>~94.8x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>32</strong></td>
+      <td align="right">171.80</td>
+      <td align="right"><strong>0.3110</strong></td>
+      <td align="right"><strong>~552.4x</strong></td>
+      <td align="right"><strong>~24.5x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Core i5-12400</strong></td>
+      <td align="left">1</td>
+      <td align="right">217.70</td>
+      <td align="right">9.10901</td>
+      <td align="right"><strong>~25.5x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>12</strong></td>
+      <td align="right">217.70</td>
+      <td align="right"><strong>1.83452</strong></td>
+      <td align="right"><strong>~118.7x</strong></td>
+      <td align="right"><strong>~6.5x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Core i5-10400F</strong></td>
+      <td align="left">1</td>
+      <td align="right">286.90</td>
+      <td align="right">10.84313</td>
+      <td align="right"><strong>~22.3x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>12</strong></td>
+      <td align="right">286.90</td>
+      <td align="right"><strong>2.13990</strong></td>
+      <td align="right"><strong>~134.1x</strong></td>
+      <td align="right"><strong>~6.0x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Xeon X5680</strong></td>
+      <td align="left">1</td>
+      <td align="right">493.59</td>
+      <td align="right">32.20330</td>
+      <td align="right"><strong>~15.3x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>12</strong></td>
+      <td align="right">493.59</td>
+      <td align="right"><strong>28.28180</strong></td>
+      <td align="right"><strong>~17.5x</strong></td>
+      <td align="right"><strong>~1.1x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>Intel Core i7-8600U</strong></td>
+      <td align="left">1</td>
+      <td align="right">725.75</td>
+      <td align="right">15.44390</td>
+      <td align="right"><strong>~47.0x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>8</strong></td>
+      <td align="right">725.75</td>
+      <td align="right"><strong>4.36330</strong></td>
+      <td align="right"><strong>~166.3x</strong></td>
+      <td align="right"><strong>~3.5x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>AMD Ryzen 5 7535HS</strong></td>
+      <td align="left">1</td>
+      <td align="right">325.49</td>
+      <td align="right">13.15830</td>
+      <td align="right"><strong>~24.7x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>12</strong></td>
+      <td align="right">325.49</td>
+      <td align="right"><strong>2.31333</strong></td>
+      <td align="right"><strong>~140.7x</strong></td>
+      <td align="right"><strong>~5.7x</strong></td>
+    </tr>
+    <tr>
+      <td rowspan="2" align="center"><strong>AMD Ryzen 5 7530U</strong></td>
+      <td align="left">1</td>
+      <td align="right">254.12</td>
+      <td align="right">12.99914</td>
+      <td align="right"><strong>~19.5x</strong></td>
+      <td align="right">1.0x</td>
+    </tr>
+    <tr>
+      <td align="left"><strong>12</strong></td>
+      <td align="right">254.12</td>
+      <td align="right"><strong>2.50237</strong></td>
+      <td align="right"><strong>~101.6x</strong></td>
+      <td align="right"><strong>~5.2x</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 **Note:**
 * `OM_Time (Avg)`: Average `OM_Time` for a given processor across all available threads.
@@ -460,6 +576,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](https://ww
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 -----
+
+
 
 The goal of the project, I remind you. training. I am not better than you. You most likely want to hear that I am worse than you. However, I and you cannot judge this. I know what you do not know, and you know what I cannot know.
 thank you for your attention, do not judge strictly.
