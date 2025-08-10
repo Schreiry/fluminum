@@ -1,9 +1,9 @@
-# Fluminum (v2.3.1): The Apex of High-Performance Matrix Operations in C++ 🚀 
-   ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
- 
-Welcome to **Fluminum**, an interactive C++ powerhouse engineered to shatter the boundaries of matrix computation speed. This project isn't just another implementation; it's a testament to the synergistic power of **Strassen's algorithm**, advanced **multi-threading with `std::async`**, low-level **SIMD (AVX/SSE2) optimizations**, and intelligent **system-aware resource management**.
+# Fluminum — high-performance matrix calculations in C++ (V2.3+)
 
-Forget the days of sluggish O(N^3) operations. Fluminum delivers **astonishing performance gains, achieving speedups of up to 574x** compared to traditional methods on modern hardware. It features a user-friendly interactive console interface, real-time progress bars, detailed performance analytics, and robust error handling, making it both a powerful tool and an exceptional learning platform.
+   ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+
+Fluminum is a high-performance console program written in C++, designed for matrix multiplication and comparison, taking into account modern hardware accelerations. It implements SIMD (single instruction, multiple data) and AVX-256 (Advanced Vector Extensions) methods for vectorizing operations, allowing a single instruction to process multiple data elements at once. Fluminum supports multithreading and multiprocessing, effectively loading all available processor cores to speed up calculations. The program is equipped with resources, work logging, and saving summary matrices to files (e.g., CSV), provides a convenient console interface and detailed logs. Below are the main mechanisms and modules of the program, as well as recommendations.
+
 
 [](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/LICENSE)
 [](https://isocpp.org/)
@@ -29,34 +29,53 @@ Forget the days of sluggish O(N^3) operations. Fluminum delivers **astonishing p
 - [⚡ Performance Tuning](docs/performance.md)
 
 
+## Key features
 
-## ✨ Key Features
+- Recursive implementation of the Strassen algorithm with a configurable threshold for switching to the naive method.
 
-  * **⚡ Blazing Speed:** Combines Strassen's $O(N^{2.807})$ complexity with deep parallelism and SIMD for unparalleled performance.
-  * **🧠 Intelligent Strassen:** Implements a **recursive, parallel Strassen's algorithm** with an **adaptive threshold** system, switching to SIMD-optimized naive multiplication for smaller sub-problems to maximize efficiency.
-  * **🌐 Multi-Core Mastery:** Leverages `std::async` and `std::future` to **dynamically distribute the 7 recursive Strassen calls** and comparison tasks across all available CPU cores.
-  * **🏎️ SIMD Acceleration:** The base-case (naive) multiplication is supercharged with **AVX and SSE2 intrinsics**, processing multiple `double` values per clock cycle where hardware allows.
-  * **🖥️ System-Aware:** Automatically **detects CPU cores, available memory, and SIMD support** (AVX/SSE2), providing memory estimates and warnings.
-  * **📊 Interactive & Informative:** Features a **rich console UI** with colors, boxes, an animated progress bar, sound notifications, and detailed performance breakdowns (including QPC and Chrono timers) and **CSV logging**.
+- Naive base multiplier, optimized using SIMD instructions (AVX → SSE2 → scalar) if hardware support is available.
+
+- Efficient use of CPU cores.
+
+- System check: detection of logical/physical cores, SIMD support check, estimation of required memory, and warnings about possible peak costs.
+
+- Handling of non-bounded input: automatic padding/unpadding of matrices, support for input from file/console/random matrix generator.
+
+- Console interface: progress bar, structured output, CSV logging, sound notifications (optional).
+
+- Tracking of computer performance metrics.
+
+- **EPCP** system - Estimation of preliminary computer performance.
+
+- **Tiling** (block multiplication of matrices).
+
+
 ![Screenshot 2025-05-23 203237](https://github.com/user-attachments/assets/f2193ee0-f37d-4904-b2a1-d4bbb493eb83)
 ![Screenshot 2025-05-23 212430](https://github.com/user-attachments/assets/51d48adf-5aee-494a-bb34-3e5e64c17c84)
 
 
-  * **🛠️ Robust & Flexible:** Handles **non-power-of-two matrices** through automatic padding/unpadding, provides various input methods (random, console, file), and allows saving results.
-  * **🔍 Parallel Comparison:** Offers a recursive, parallel matrix comparison function with **epsilon support** for floating-point accuracy checks.
-  * **📝 Modern C++:** Built with C++17, emphasizing clean code, RAII, and modern concurrency features.
+# Optimization in matrix multiplication
 
------
 
-## 💡 Strassen's Algorithm: The Divide-and-Conquer Revolution
+### Traditional algorithm and its shortcomings
 
-Traditional matrix multiplication is a straightforward, yet computationally intensive, process with a cubic complexity ($O(N^3)$). This means doubling the matrix size increases the workload eightfold, quickly becoming impractical for large matrices.
+Matrix multiplication of dimension n×n, according to the mathematical definition, is performed by three nested loops (i, j, k) and requires Θ(n³) multiplication and addition operations.
+A naive implementation is parallel in n, but its practical efficiency is extremely low: due to the scale of memory used, the processor spends most of its time idle, waiting for data from RAM. It is estimated that in such an implementation, processors can only be loaded to a fraction of their capacity due to slow memory. For example, a computer with an AVX2 CPU performs only 7% of the theoretical number of operations per second using a naive algorithm.
 
-Volker Strassen's 1969 algorithm changed the game. It applies a "divide and conquer" strategy:
 
-1.  **Divide:** A large $N \\times N$ matrix multiplication is broken down into operations on smaller $N/2 \\times N/2$ sub-matrices.
-2.  **Conquer (The Trick):** Instead of the 8 sub-matrix multiplications required by the naive approach, Strassen cleverly rearranges the calculations to require only **7 multiplications**. This is achieved by introducing 10 intermediate sum/difference matrices (S1-S10) and calculating 7 product matrices (P1-P7).
-3.  **Combine:** The 7 product matrices are combined (through addition and subtraction) to form the four quadrants of the final result matrix.
+### SIMD vectorization and AVX
+
+The first step toward acceleration is the use of CPU SIMD extensions. Instead of element-wise multiplication, Fluminum uses AVX instructions, which perform several multiplications and additions simultaneously. In practice, the algorithm is transformed as follows: the scalar element A[i][k] is loaded into the SIMD register, then multiplied by a vector of 8 consecutive elements B[k][j..j+7]. The result is a vector of 8 elements, which is accumulated in the corresponding positions of the output matrix C. Thus, the vector formula calculates 8 numbers C[i][j..j+7] at once, while the classic algorithm processed one element C[i][j] at a time. This gives approximately an 8-fold acceleration of the single-threaded core (the degree of parallelism increases by that much).
+In addition, Fluminum can use FMA (fused multiply-add) instructions, which perform multiplication and addition in a single command, further loading the ALU and reducing overhead.
+
+### Block multiplication (Tiling)
+
+Further optimization solves the problem of memory locality. Fluminum breaks large matrices into small tiles of size T×T and multiplies them in blocks. This means that the innermost loop does not operate on a single element, but on an entire block that fits entirely into the processor cache. Research shows that with the right T (around √(cache size)), this approach reduces cache misses by a factor of Θ(n³). Using Fluminum as an example: if the matrix is too large, its multiplication breaks down into a series of “multiply tile A by tile B” operations — local copies of matrix blocks “rotate” in the L1/L2 cache, and the results are accumulated in the tiles of the output matrix. This significantly reduces accesses to slow memory, which is confirmed by a noticeable increase in speed: in experiments, fast-ordered block multiplication yielded a 2–5-fold gain compared to naive multiplication on the same data.
+
+### Multithreading and parallelization
+
+Fluminum effectively utilizes all CPU cores: work on matrix blocks is naturally divided between threads. Each thread receives its own range of blocks (or rows) of the output matrix C, over which it performs multiplication of the corresponding submatrices A and B. Since the blocks are relatively independent, there are virtually no synchronization delays when calculating them. Theoretically, distributing tasks across P threads should result in up to P-fold acceleration compared to a single-threaded run, but in practice, the overhead of synchronization and resources (e.g., cache interleaving) slightly reduces the scaling. According to tests, modern 16-32-thread systems show an acceleration of ≈20-25×. Thus, the example with a dual-core CPU (4 virtual threads) shows a real gain of ~2× thanks to the full utilization of physical cores and partial hyper-threading. Fluminum calculates the CPU load level itself and, based on the data obtained, uses the number of threads that will not harm the overall operation of the operating system and its processes. Despite automation, the program allows you to manually set the number of threads, giving you not only control over the process but also the ability to adapt the program to specific hardware and circumstances.
+
 
 $$A = \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{bmatrix}, \quad B = \begin{bmatrix} B_{11} & B_{12} \\ B_{21} & B_{22} \end{bmatrix}, \quad C = \begin{bmatrix} C_{11} & C_{12} \\ C_{21} & C_{22} \end{bmatrix}$$
 
@@ -89,22 +108,8 @@ $$A = \begin{bmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{bmatrix}, \quad B 
 
 This recursive reduction from 8 to 7 multiplications leads to the $O(N^{2.807})$ complexity. While the number of additions/subtractions increases, for large N, the reduction in multiplications dominates, leading to significant speedups. Fluminum manages the overhead by **switching to an SIMD-optimized naive method below a configurable threshold**, ensuring peak performance across all scales.
 
------
-<details>
-<summary> ## ⚙️ The Fluminum Edge: Deep Optimizations </summary>
 
-Fluminum achieves its performance through a multi-pronged optimization strategy:
-
-1.  **Recursive Parallelism (`std::async`)**: The `strassen_recursive_worker` function lies at the heart. When a matrix is split, the 7 subsequent recursive calls (P1-P7) are launched as **asynchronous tasks using `std::async`**. This creates a tree of parallel computations. The depth of this parallelism (`max_depth_async`) is calculated based on the available hardware threads, ensuring optimal core utilization without excessive thread creation overhead.
-2.  **SIMD-Accelerated Base Case (`multiply_naive`)**: Strassen's recursion eventually hits a base case. Instead of a simple naive loop, Fluminum's `multiply_naive` leverages **Single Instruction, Multiple Data (SIMD) intrinsics**. It checks for **AVX** support first, falling back to **SSE2** if AVX isn't available. This allows the CPU to perform multiplications on 4 (AVX) or 2 (SSE2) `double` values simultaneously, drastically speeding up the most numerous, small-scale multiplications.
-3.  **Adaptive Thresholding**: The user can specify a `threshold`. Matrices smaller than this size are processed by the fast `multiply_naive` function, avoiding the overhead of Strassen's recursion and matrix additions/subtractions where they aren't beneficial. Setting the threshold to 0 forces naive (but still SIMD-accelerated) multiplication.
-4.  **Automatic Padding**: Strassen's algorithm (as implemented here) requires square matrices with dimensions that are powers of two. Fluminum **automatically handles any input size** by padding the matrices with zeros up to the next power of two (`Matrix::pad`) before computation and then trimming them back to the original size (`Matrix::unpad`) afterwards.
-5.  **Memory & System Awareness**: Before starting, the program checks available RAM and estimates the peak memory usage, issuing warnings if necessary. It uses `GlobalMemoryStatusEx` and `GetProcessMemoryInfo` (Windows-specific) for this.
-6.  **User Experience Focus**: A `display_progress` function runs in a separate thread, using an `std::atomic<int>` counter to provide a **real-time progress bar** during long computations. The console output is enhanced with colors and structured boxes for better readability.
-
------
-</details>
-## 🏗️ Architecture Overview
+# 🏗️ Architecture and main modules
 
 ```mermaid
 graph TD;
@@ -146,43 +151,36 @@ graph TD;
     classDef systemNode fill:#fd79a8,stroke:#e84393,stroke-width:2px,color:#fff;
 ```
 
+Fluminum is built on a modular architecture. At its core is the Fluminum class (in fluminum.cpp), which implements the logic for loading matrices, managing parallelism, and calling optimized computing cores. A separate PerformanceMonitor module (see PerformanceMonitor.cpp/.h) is used for monitoring, which measures execution time and resource consumption based on a timer or events. Working with CSV files and logging are separated into auxiliary functions, providing flexibility in input/output. Separate modules are responsible for:
+
+- Loading and saving matrices – reading source data from CSV or other formats, writing the resulting matrices to a file.
+
+- Matrix multiplication – cores for matrix multiplication with optimizations (see below).
+
+ - Matrix comparison – functions for checking matrix matches (e.g., comparing the results of different implementations or checking correctness).
+
+- Monitoring – periodic collection of statistics on time and resources.
+
+- Console interface and logging – command line parsing, output of messages, errors, and statistics to the log.
+
+In general, Fluminum wraps a complex matrix multiplication algorithm into a convenient tool: the user launches the program, passes the paths to the files and parameters (matrix size, number of threads, comparison mode, etc.), and Fluminum performs the calculation and outputs a report.
 
 
-The single C++ file `fluminumTversion.cpp` is a self-contained unit demonstrating these principles.
-
-  * **Includes**: A comprehensive set of standard library headers (`<vector>`, `<thread>`, `<future>`, `<atomic>`, `<chrono>`, `<immintrin.h>`) and Windows-specific headers (`<windows.h>`, `<psapi.h>`) are used.
-  * **Console Formatting**: A set of functions (`print_header_box`, `print_line_in_box`) and constants handle the colored, structured console output.
-  * **System Info**: Functions like `getSystemMemoryInfo`, `getCpuCoreCount`, `check_simd_support`, and `estimateStrassenMemoryMB` provide hardware insights.
-  * **`Matrix` Class**:
-      * **Data**: Uses `std::vector<double>` for flat, contiguous storage.
-      * **Constructors**: Allows creation from dimensions, initial values, or `std::vector<std::vector<double>>`.
-      * **Operators**: `+` and `-` for sub-matrix operations.
-      * **`multiply_naive`**: The SIMD-optimized base case.
-      * **`split` / `combine`**: Handles the divide-and-conquer mechanics.
-      * **`pad` / `unpad`**: Ensures power-of-two dimensions.
-      * **I/O**: `readFromConsole`, `readFromFile`, `saveToFile`.
-  * **Strassen Implementation**:
-      * **`multiplyStrassenParallel`**: The main entry point. Handles padding, thread calculation, progress bar setup, and calls the worker.
-      * **`strassen_recursive_worker`**: The core recursive function. Implements the 7-multiplication logic and launches tasks via `std::async`.
-  * **Comparison Implementation**:
-      * **`compareMatricesParallel`**: Similar structure, recursively divides matrices and compares quadrants in parallel.
-      * **`compareMatricesInternal`**: The recursive worker for comparison.
-  * **Main Loop (`main`, `run_one_operation`)**: Drives the interactive user interface, handles input validation, orchestrates operations, displays results, and manages logging.
-
-
-
-# <img src="https://media.giphy.com/media/iY8CRBdQXODJSCERIr/giphy.gif" width="35"> Performance Benchmarks: A Leap in Efficiency
-
-
-![NUX_Octodex](https://github.com/user-attachments/assets/82a26c8c-149e-4e48-a460-8b6323767505)
+# <img src="https://media.giphy.com/media/iY8CRBdQXODJSCERIr/giphy.gif" width="35"><b> performance data : </b>
 
 
 
 
 > [!NOTE]
-> The true power of Fluminum is evident in its benchmark results. The following table shows the execution times for multiplying two **2048x2048** matrices on various CPUs, comparing naive $O(N^3)$ (OM\_Time) with Fluminum's > parallel Strassen (SA\_Time).
+> Fluminum performance is evaluated using the built-in PerformanceMonitor module. This module measures the execution time of the main stages (UM_Time) and collects metrics such as CPU core load
+> and memory bandwidth. The table in the documentation shows that Fluminum demonstrates fantastic performance gains compared to a naive implementation (OM – “Original Multiplication”). > Thus, on systems with 12–32 threads, there is a performance increase of tens or even hundreds of times compared to a single-threaded implementation, thanks to the combination of SIMD, tiling, and multithreading. For example, on
+> an Intel Core i9-14900 processor, the 32-thread version showed a speedup of ~24.5× compared to a single-threaded run, and the efficiency of AVX optimizations approached the limit of CPU throughput.
 
-[ more detailed tables & more information here](https://github.com/Schreiry/fluminum/blob/main/Doc/detailed%20graphs.md)
+
+> [!NOTE]
+> It is important to note that real benchmarks depend on the processor architecture (cache, clock speed, availability of AVX512, etc.) and matrix properties (dense or sparse, size, memory alignment). Fluminum provides > monitoring that allows you to compare performance on different machines (results are given on Intel and AMD processors with different caches and frequencies) and identify bottlenecks. If necessary
+> developers and users can refer to the logs and profiles obtained—for example, to pay attention to data loading times or how long the CPU was idle between blocks.
+
 
 > [!IMPORTANT]
 >
@@ -241,7 +239,7 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 ![CE12](https://github.com/user-attachments/assets/4d71ad83-a2b0-4a94-bad4-90fb98170c55)
 ![CE13](https://github.com/user-attachments/assets/d6dc8e82-a74d-4558-bf67-0bb841e39fb1)
 ![CE14](https://github.com/user-attachments/assets/208f9842-5f12-4086-adf8-5e411bf8a065)
-
+[ more detailed tables & more information here](https://github.com/Schreiry/fluminum/blob/main/Doc/detailed%20graphs.md)
 
 **Observations:**
 
@@ -261,41 +259,19 @@ This table shows the `SA_Time` execution time for the 1st and maximum threads, a
 > | **i9-14900** | 114.6× | **120.4X** | 🥈 **Excellent** |
 > | **i5-12400** | 25.5× | **23.8X×** | 🥉 **Good** |
 
+### Observations:
+
+- **Algorithmic dominance:** Only Strassen provides acceleration from 18x to 46x.
+ 
+- **The power of parallelism:** Multithreading adds another 3.5x to 24.5x acceleration.
+ 
+ - **Synergistic explosion:** The combined effect yields an incredible improvement of 100x to 574x, turning minute-long calculations into tasks that take fractions of a second.
+ 
+- **Scalability:** Performance scales well with increasing the number of cores, demonstrating effective parallelization.
+ 
+- **SIMD impact:** The already impressive results are further enhanced by the SIMD-optimized base case, although its individual contribution is not highlighted in these high-level tests.
+
 -----
-
-## 🔬 Technical Deep Dive
-
-### Memory Layout Optimization
-
-```cpp
-class Matrix {
-    std::vector<double> data;  // Contiguous memory layout
-    size_t rows, cols;         // Dimensions
-    
-    // Cache-friendly access patterns
-    inline double& operator()(size_t i, size_t j) {
-        return data[i * cols + j];
-    }
-};
-```
-
-### SIMD Implementation
-
-```cpp
-void multiply_naive_avx(const Matrix& A, const Matrix& B, Matrix& C) {
-    for (size_t i = 0; i < A.rows; ++i) {
-        for (size_t j = 0; j < B.cols; j += 4) {
-            __m256d sum = _mm256_setzero_pd();
-            for (size_t k = 0; k < A.cols; ++k) {
-                __m256d a = _mm256_broadcast_sd(&A(i, k));
-                __m256d b = _mm256_loadu_pd(&B(k, j));
-                sum = _mm256_fmadd_pd(a, b, sum);
-            }
-            _mm256_storeu_pd(&C(i, j), sum);
-        }
-    }
-}
-```
 
 
 
@@ -303,7 +279,7 @@ void multiply_naive_avx(const Matrix& A, const Matrix& B, Matrix& C) {
 ## 🛠️ Requirements & Setup
 
   * **Operating System:** Windows (heavily utilizes WinAPI for console features and system info). Adaptation to Linux/macOS is possible but requires replacing Windows-specific calls.
-  * **Compiler:** C++17 support required. **Microsoft Visual C++ (MSVC)** is recommended due to `_MSC_VER` checks, intrinsics, and `#pragma comment(lib, "Psapi.lib")`. (Can be adapted for GCC/Clang with minor changes).
+  * **Compiler:** C++20 support required. **Microsoft Visual C++ (MSVC)** is recommended due to `_MSC_VER` checks, intrinsics, and `#pragma comment(lib, "Psapi.lib")`. (Can be adapted for GCC/Clang with minor changes).
   * **Hardware:** A multi-core CPU is highly recommended to benefit from parallelism. AVX or SSE2 support is needed for full SIMD acceleration.
 
 ### Installation & Compilation
@@ -370,10 +346,8 @@ The program will greet you with an interactive menu:
 
 - [x] less CPU heating ;
 
-- [ ] PCPA [Preliminary computer performance assessment] - (In active development) ; 
-
-- [X] student conference ;
-
+- [X] student conference .
+<img width="64" height="64" alt="64" src="https://github.com/user-attachments/assets/9da1dcd5-79c2-4a49-bdc0-ab81732e0a06" /> 
 
 
 
@@ -397,7 +371,9 @@ The program will greet you with an interactive menu:
 
 - [ ] Profiling ; 
  
-- [ ] Profiling and testing ; 
+- [ ] Profiling and testing ;
+
+- [ ] PCPA [Preliminary computer performance assessment] - (In active development) ; 
  
 - [ ] Dynamic threshold optimization ;
 
