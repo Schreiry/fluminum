@@ -50,9 +50,6 @@ Fluminum is a high-performance console program written in C++, designed for matr
 - **Tiling** (block multiplication of matrices).
 
 
-![Screenshot 2025-05-23 203237](https://github.com/user-attachments/assets/f2193ee0-f37d-4904-b2a1-d4bbb493eb83)
-![Screenshot 2025-05-23 212430](https://github.com/user-attachments/assets/51d48adf-5aee-494a-bb34-3e5e64c17c84)
-
 
 # Optimization in matrix multiplication
 
