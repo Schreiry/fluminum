@@ -11,15 +11,23 @@
 
 
 ## 🔠 Language variability for documentation : 
- > [!TIP]
- > 
- > [ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)
- >
- > [На русском языке](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
- >
- > [українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
- >
- > [en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+
+> [!TIP]
+> 
+> ### > [ 🇬🇪 ქართულ ენაზე ](https://github.com/Schreiry/fluminum/blob/main/Doc/README%5B%20%E1%83%A5%E1%83%90%20%5D.md)  
+>
+   >
+>
+> ### > [ 🇷🇺 На Русском](https://github.com/Schreiry/fluminum/blob/main/Doc/%D0%9D%D0%B0%20%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC.md)
+>
+>
+>
+> ### > [ 🇺🇦 українською мовою](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+>
+>
+>
+> ### > [ 🇫🇷 en français](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/README.md)
+
 
 
 ## 📚 Documentation
