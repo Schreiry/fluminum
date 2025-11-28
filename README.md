@@ -2,7 +2,7 @@
 
    ![Intel](https://a11ybadges.com/badge?logo=intel) ![AMD](https://a11ybadges.com/badge?logo=amd) ![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)  ![Windows 11](https://img.shields.io/badge/Windows%2011-%230079d5.svg?style=for-the-badge&logo=Windows%2011&logoColor=white) 	![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
-Fluminum is a high-performance console program written in C++, designed for matrix multiplication and comparison, taking into account modern hardware accelerations. It implements SIMD (single instruction, multiple data) and AVX-256 (Advanced Vector Extensions) methods for vectorizing operations, allowing a single instruction to process multiple data elements at once. Fluminum supports multithreading and multiprocessing, effectively loading all available processor cores to speed up calculations. The program is equipped with resources, work logging, and saving summary matrices to files (e.g., CSV), provides a convenient console interface and detailed logs. Below are the main mechanisms and modules of the program, as well as recommendations.
+**Fluminum** is a high-performance console program written in **C++**, designed for matrix multiplication and comparison, taking into account modern hardware accelerations. It implements **SIMD** (single instruction, multiple data) and **AVX-256** (Advanced Vector Extensions) methods for vectorizing operations, allowing a single instruction to process multiple data elements at once. Fluminum supports multithreading and multiprocessing, effectively loading all available processor cores to speed up calculations. The program is equipped with resources, work logging, and saving summary matrices to files (e.g., **CSV**), provides a convenient console interface and detailed logs. Below are the main mechanisms and modules of the program, as well as recommendations.
 
 
 [](https://www.google.com/search?q=https://github.com/Schreiry/fluminum/blob/main/LICENSE)
@@ -33,15 +33,15 @@ Fluminum is a high-performance console program written in C++, designed for matr
 
 - Recursive implementation of the Strassen algorithm with a configurable threshold for switching to the naive method.
 
-- Naive base multiplier, optimized using SIMD instructions (AVX → SSE2 → scalar) if hardware support is available.
+- Naive base multiplier, optimized using **SIMD** instructions (**AVX → SSE2 → scalar**) if hardware support is available.
 
 - Efficient use of CPU cores.
 
-- System check: detection of logical/physical cores, SIMD support check, estimation of required memory, and warnings about possible peak costs.
+- System check: detection of logical/physical cores, **SIMD** support check, estimation of required memory, and warnings about possible peak costs.
 
 - Handling of non-bounded input: automatic padding/unpadding of matrices, support for input from file/console/random matrix generator.
 
-- Console interface: progress bar, structured output, CSV logging, sound notifications (optional).
+- Console interface: progress bar, structured output, **CSV logging**, sound notifications (optional).
 
 - Tracking of computer performance metrics.
 
