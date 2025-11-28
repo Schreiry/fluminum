@@ -56,18 +56,18 @@ Fluminum is a high-performance console program written in C++, designed for matr
 
 ### Traditional algorithm and its shortcomings
 
-Matrix multiplication of dimension n×n, according to the mathematical definition, is performed by three nested loops (i, j, k) and requires Θ(n³) multiplication and addition operations.
-A naive implementation is parallel in n, but its practical efficiency is extremely low: due to the scale of memory used, the processor spends most of its time idle, waiting for data from RAM. It is estimated that in such an implementation, processors can only be loaded to a fraction of their capacity due to slow memory. For example, a computer with an AVX2 CPU performs only 7% of the theoretical number of operations per second using a naive algorithm.
+Matrix multiplication of dimension n×n, according to the mathematical definition, is performed by three nested loops (**i**, **j**, **k**) and requires **Θ(n³)** multiplication and addition operations.
+A naive implementation is parallel in n, but its practical efficiency is extremely low: due to the scale of memory used, the processor spends most of its time idle, waiting for data from RAM. It is estimated that in such an implementation, processors can only be loaded to a fraction of their capacity due to slow memory. For example, a computer with an **AVX2** CPU performs only **7%** of the theoretical number of operations per second using a naive algorithm.
 
 
 ### SIMD vectorization and AVX
 
-The first step toward acceleration is the use of CPU SIMD extensions. Instead of element-wise multiplication, Fluminum uses AVX instructions, which perform several multiplications and additions simultaneously. In practice, the algorithm is transformed as follows: the scalar element A[i][k] is loaded into the SIMD register, then multiplied by a vector of 8 consecutive elements B[k][j..j+7]. The result is a vector of 8 elements, which is accumulated in the corresponding positions of the output matrix C. Thus, the vector formula calculates 8 numbers C[i][j..j+7] at once, while the classic algorithm processed one element C[i][j] at a time. This gives approximately an 8-fold acceleration of the single-threaded core (the degree of parallelism increases by that much).
+The first step toward acceleration is the use of CPU SIMD extensions. Instead of element-wise multiplication, Fluminum uses AVX instructions, which perform several multiplications and additions simultaneously. In practice, the algorithm is transformed as follows: the scalar element **A[i][k]** is loaded into the **SIMD** register, then multiplied by a vector of 8 consecutive elements **B[k][j..j+7]**. The result is a vector of 8 elements, which is accumulated in the corresponding positions of the output matrix C. Thus, the vector formula calculates 8 numbers **C[i][j..j+7]** at once, while the classic algorithm processed one element **C[i][j]** at a time. This gives approximately an 8-fold acceleration of the single-threaded core (the degree of parallelism increases by that much).
 In addition, Fluminum can use FMA (fused multiply-add) instructions, which perform multiplication and addition in a single command, further loading the ALU and reducing overhead.
 
 ### Block multiplication (Tiling)
 
-Further optimization solves the problem of memory locality. Fluminum breaks large matrices into small tiles of size T×T and multiplies them in blocks. This means that the innermost loop does not operate on a single element, but on an entire block that fits entirely into the processor cache. Research shows that with the right T (around √(cache size)), this approach reduces cache misses by a factor of Θ(n³). Using Fluminum as an example: if the matrix is too large, its multiplication breaks down into a series of “multiply tile A by tile B” operations — local copies of matrix blocks “rotate” in the L1/L2 cache, and the results are accumulated in the tiles of the output matrix. This significantly reduces accesses to slow memory, which is confirmed by a noticeable increase in speed: in experiments, fast-ordered block multiplication yielded a 2–5-fold gain compared to naive multiplication on the same data.
+Further optimization solves the problem of memory locality. Fluminum breaks large matrices into small tiles of size T×T and multiplies them in blocks. This means that the innermost loop does not operate on a single element, but on an entire block that fits entirely into the processor cache. Research shows that with the right T (around √(cache size)), this approach reduces cache misses by a factor of Θ(n³). Using Fluminum as an example: if the matrix is too large, its multiplication breaks down into a series of “multiply tile A by tile B” operations — local copies of matrix blocks “rotate” in the **L1/L2 cache**, and the results are accumulated in the tiles of the output matrix. This significantly reduces accesses to slow memory, which is confirmed by a noticeable increase in speed: in experiments, fast-ordered block multiplication yielded a 2–5-fold gain compared to naive multiplication on the same data.
 
 ### Multithreading and parallelization
 
@@ -150,7 +150,7 @@ graph TD;
 
 Fluminum is built on a modular architecture. At its core is the Fluminum class (in fluminum.cpp), which implements the logic for loading matrices, managing parallelism, and calling optimized computing cores. A separate PerformanceMonitor module (see PerformanceMonitor.cpp/.h) is used for monitoring, which measures execution time and resource consumption based on a timer or events. Working with CSV files and logging are separated into auxiliary functions, providing flexibility in input/output. Separate modules are responsible for:
 
-- Loading and saving matrices – reading source data from CSV or other formats, writing the resulting matrices to a file.
+- Loading and saving matrices – reading source data from **CSV** or other formats, writing the resulting matrices to a file.
 
 - Matrix multiplication – cores for matrix multiplication with optimizations (see below).
 
